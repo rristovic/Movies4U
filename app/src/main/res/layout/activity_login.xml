@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="loginViewModel"
+            type="com.runit.moviesmvvmmockup.ui.login.LoginViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <WebView
+            android:background="@android:color/transparent"
+            android:id="@+id/wv_web"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></WebView>
+
+        <ProgressBar
+            android:layout_centerInParent="true"
+            android:visibility="@{loginViewModel.isLoading ? View.VISIBLE : View.GONE}"
+            android:id="@+id/pb_loader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</layout>
