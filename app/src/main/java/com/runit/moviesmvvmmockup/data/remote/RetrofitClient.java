@@ -1,18 +1,12 @@
 package com.runit.moviesmvvmmockup.data.remote;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.runit.moviesmvvmmockup.utils.exception.ApplicationException;
 
-import java.io.IOException;
-
 import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -32,7 +26,7 @@ public class RetrofitClient {
     private static Retrofit mInstance = null;
     // Application context
     private static Context mContext;
-    private static GithubApi mApiClient;
+    private static TMDBApi mApiClient;
 
     /**
      * Initialize networking client.
@@ -56,12 +50,12 @@ public class RetrofitClient {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
-        mApiClient = mInstance.create(GithubApi.class);
+        mApiClient = mInstance.create(TMDBApi.class);
         // Enforce application context
         mContext = context.getApplicationContext();
     }
 
-    public static GithubApi getClient() {
+    public static TMDBApi getClient() {
         if (mInstance == null) {
             throw new ApplicationException("Must call init() method in order to use RetrofitClient.");
         }

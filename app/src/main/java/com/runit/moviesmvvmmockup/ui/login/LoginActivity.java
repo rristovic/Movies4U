@@ -1,12 +1,8 @@
 package com.runit.moviesmvvmmockup.ui.login;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -15,7 +11,7 @@ import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.data.remote.NetworkConstants;
 import com.runit.moviesmvvmmockup.databinding.ActivityLoginBinding;
 import com.runit.moviesmvvmmockup.ui.main.MainActivity;
-import com.runit.moviesmvvmmockup.utils.UIUtils;
+import com.runit.moviesmvvmmockup.utils.UIUtil;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -48,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(token != null && !token.isEmpty()) {
                         mWebView.loadUrl(NetworkConstants.loginPage(token));
                     } else {
-                        UIUtils.showToast(LoginActivity.this, getString(R.string.network_error));
+                        UIUtil.showToast(LoginActivity.this, getString(R.string.network_error));
                     }
                 });
             }

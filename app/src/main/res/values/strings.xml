@@ -6,4 +6,20 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="network_error">Network error.</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="top_rated">Top rated movies</string>
+    <string name="upcoming">Upcoming movies</string>
+    <string name="now_playing">Now playing movies</string>
+    <string name="popular">Popular movies</string>
+    <string name="movies_failure">Failed to fetch movies.</string>
+
+    <string-array name="movie_categories">
+        <item>@string/top_rated</item>
+        <item>@string/upcoming</item>
+        <item>@string/now_playing</item>
+        <item>@string/popular</item>
+    </string-array>
 </resources>
