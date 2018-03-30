@@ -15,6 +15,7 @@
     <string name="now_playing">Now playing movies</string>
     <string name="popular">Popular movies</string>
     <string name="movies_failure">Failed to fetch movies.</string>
+    <string name="movies">Movies</string>
 
     <string-array name="movie_categories">
         <item>@string/top_rated</item>

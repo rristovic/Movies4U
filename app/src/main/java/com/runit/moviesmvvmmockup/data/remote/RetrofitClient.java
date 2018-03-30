@@ -2,12 +2,22 @@ package com.runit.moviesmvvmmockup.data.remote;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 
 import com.runit.moviesmvvmmockup.utils.exception.ApplicationException;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Authenticator;
+import okhttp3.Cache;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.Route;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -38,6 +48,10 @@ public class RetrofitClient {
     public static void init(Context context) {
         final HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        // Build cache dir
+        File httpCacheDirectory = new File(context.getCacheDir(), "vat_mobile_cache");
+        Cache cache = new Cache(httpCacheDirectory,NetworkConstants.CACHE_SIZE);
+        // Build OkHttp client
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(loggingInterceptor)
                 .addNetworkInterceptor(chain -> {
@@ -46,7 +60,11 @@ public class RetrofitClient {
                     Request request = original.newBuilder().url(url).build();
                     return chain.proceed(request);
                 })
+                .readTimeout(NetworkConstants.TIME_OUT_SECONDS, TimeUnit.SECONDS)
+                .connectTimeout(NetworkConstants.TIME_OUT_SECONDS, TimeUnit.SECONDS)
+                .cache(cache)
                 .build();
+
         mInstance = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

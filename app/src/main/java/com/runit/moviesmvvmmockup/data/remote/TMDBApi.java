@@ -1,7 +1,9 @@
 package com.runit.moviesmvvmmockup.data.remote;
 
+import com.runit.moviesmvvmmockup.data.model.Account;
 import com.runit.moviesmvvmmockup.data.model.MovieModel;
 import com.runit.moviesmvvmmockup.data.model.ServerResponse;
+import com.runit.moviesmvvmmockup.data.model.Session;
 import com.runit.moviesmvvmmockup.data.model.Token;
 
 import retrofit2.Call;
@@ -17,6 +19,12 @@ import retrofit2.http.Query;
 public interface TMDBApi {
     @GET("authentication/token/new")
     Call<Token> getAuthToken();
+
+    @GET("authentication/session/new")
+    Call<Session> getSession(@Query("request_token") String requestToken);
+
+    @GET("account")
+    Call<Account> getAccount(@Query("session_id") String session_id);
 
     @GET("movie/now_playing")
     Call<ServerResponse<MovieModel>> getNowPlayingMovies(@Query("page") Integer page);

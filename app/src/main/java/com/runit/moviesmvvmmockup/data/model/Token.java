@@ -34,7 +34,7 @@ public class Token {
         return expires_at;
     }
 
-    public String getRequest_token() {
+    public String token() {
         return request_token;
     }
 }

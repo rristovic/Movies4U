@@ -39,10 +39,11 @@ public class LoginActivity extends AppCompatActivity {
         mViewModel.isUserLoggedIn().observe(this, isLoggedIn -> {
             if(isLoggedIn != null && isLoggedIn) {
                 MainActivity.startActivity(LoginActivity.this);
+                LoginActivity.this.finish();
             } else {
-                mViewModel.getToken().observe(this, token -> {
-                    if(token != null && !token.isEmpty()) {
-                        mWebView.loadUrl(NetworkConstants.loginPage(token));
+                mViewModel.getLoginPage().observe(this, loginPage -> {
+                    if(loginPage != null && !loginPage.isEmpty()) {
+                        mWebView.loadUrl(loginPage);
                     } else {
                         UIUtil.showToast(LoginActivity.this, getString(R.string.network_error));
                     }
