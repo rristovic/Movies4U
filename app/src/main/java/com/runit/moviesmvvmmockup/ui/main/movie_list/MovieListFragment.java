@@ -42,8 +42,7 @@ public class MovieListFragment extends Fragment {
         MovieListViewModel viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
         binding.setMovieListVM(viewModel);
         // Setup list
-        mAdapter = new MovieListAdapter(binding.rvMovies);
-        binding.rvMovies.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mAdapter = new MovieListAdapter(binding.rvMovies, new GridLayoutManager(getActivity(), 2));
         binding.rvMovies.setAdapter(mAdapter);
         viewModel.getMoviesForCategory((MovieListCategory) getArguments().getSerializable(ARG_FRAG_CATEGORY)).observe(this, movieModels -> {
             if (movieModels != null) {

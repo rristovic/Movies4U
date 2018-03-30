@@ -46,7 +46,7 @@ public class LoginViewModel extends ViewModel {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    token.setValue(response.body().request_token);
+                    token.setValue(response.body().getRequest_token());
                 } else {
                     token.setValue(null);
                 }

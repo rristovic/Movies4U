@@ -18,8 +18,8 @@ import com.squareup.picasso.Picasso;
 
 public class MovieListAdapter extends AbsEndlessRecycleViewAdapter<MovieModel, MovieListAdapter.MovieItemViewHolder> {
 
-    public MovieListAdapter(RecyclerView recyclerView) {
-        super(recyclerView);
+    public MovieListAdapter(RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager) {
+        super(recyclerView, layoutManager);
     }
 
     @Override

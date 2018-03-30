@@ -1,5 +1,6 @@
 package com.runit.moviesmvvmmockup.data.remote;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.runit.moviesmvvmmockup.utils.exception.ApplicationException;
@@ -25,6 +26,7 @@ public class RetrofitClient {
     // Retrofit singleton instance
     private static Retrofit mInstance = null;
     // Application context
+    @SuppressLint("StaticFieldLeak")
     private static Context mContext;
     private static TMDBApi mApiClient;
 

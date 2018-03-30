@@ -37,7 +37,7 @@ public class MovieListViewModel extends ViewModel {
      * @param category desired category for move list.
      * @return LiveData observable.
      */
-    public LiveData<List<MovieModel>> getMoviesForCategory(MovieListCategory category) {
+    LiveData<List<MovieModel>> getMoviesForCategory(MovieListCategory category) {
         if (mMovies == null) {
             mMovies = new MutableLiveData<>();
             this.mCurrentCategory = category;
@@ -50,7 +50,7 @@ public class MovieListViewModel extends ViewModel {
     /**
      * Call when next page of move list is needed.
      */
-    public void getNextPage() {
+    void getNextPage() {
         mCurrentPage += 1;
         fetchMovies();
     }
@@ -86,7 +86,7 @@ public class MovieListViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ServerResponse<MovieModel>> call, Response<ServerResponse<MovieModel>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    onResponseSuccess(response.body().results);
+                    onResponseSuccess(response.body().getResults());
                 } else {
                     onResponseFailure();
                 }
@@ -104,7 +104,7 @@ public class MovieListViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ServerResponse<MovieModel>> call, Response<ServerResponse<MovieModel>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    onResponseSuccess(response.body().results);
+                    onResponseSuccess(response.body().getResults());
                 } else {
                     onResponseFailure();
                 }
@@ -122,7 +122,7 @@ public class MovieListViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ServerResponse<MovieModel>> call, Response<ServerResponse<MovieModel>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    onResponseSuccess(response.body().results);
+                    onResponseSuccess(response.body().getResults());
                 } else {
                     onResponseFailure();
                 }
@@ -140,7 +140,7 @@ public class MovieListViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ServerResponse<MovieModel>> call, Response<ServerResponse<MovieModel>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    onResponseSuccess(response.body().results);
+                    onResponseSuccess(response.body().getResults());
                 } else {
                     onResponseFailure();
                 }

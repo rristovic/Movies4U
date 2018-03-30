@@ -21,6 +21,11 @@ public class MovieModel {
     @SerializedName("title")
     private String title;
 
+    public MovieModel(String thumbnailUrl, String title) {
+        this.thumbnailUrl = thumbnailUrl;
+        this.title = title;
+    }
+
     /**
      * Return the movie thumbnail url.
      *
@@ -31,17 +36,9 @@ public class MovieModel {
         return TextUtils.isEmpty(thumbnailUrl) ? null : "https://image.tmdb.org/t/p/w500" + thumbnailUrl;
     }
 
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
-    }
-
-
     public @NonNull
     String getTitle() {
         return title == null ? "" : title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 }

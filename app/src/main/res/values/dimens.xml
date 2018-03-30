@@ -7,4 +7,7 @@
     <dimen name="nav_image_dimen">80dp</dimen>
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="movie_item_height">350dp</dimen>
+    <dimen name="movie_item_img_max_size">300dp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
 </resources>

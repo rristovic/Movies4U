@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -36,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mNavigationHelper = new MainNavigationHelper(getResources());
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -45,14 +45,26 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
-                    // set item as selected to persist highlight
-                    menuItem.setChecked(true);
                     // close drawer when item is tapped
                     mDrawerLayout.closeDrawers();
-
-                    // Add code here to update the UI based on the item selected
-                    // For example, swap UI fragments here
-
+                    switch (menuItem.getItemId()) {
+                        case R.id.nav_now_playing: {
+                            mNavigationHelper.switchToPage(MovieListCategory.NOW_PLAYING);
+                            break;
+                        }
+                        case R.id.nav_popular: {
+                            mNavigationHelper.switchToPage(MovieListCategory.POPULAR);
+                            break;
+                        }
+                        case  R.id.nav_top_rated: {
+                            mNavigationHelper.switchToPage(MovieListCategory.TOP_RATED);
+                            break;
+                        }
+                        case R.id.nav_upcoming: {
+                            mNavigationHelper.switchToPage(MovieListCategory.UPCOMING);
+                            break;
+                        }
+                    }
                     return true;
                 });
 
@@ -62,14 +74,12 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new MoviesSectionPagerAdapter(getSupportFragmentManager(), mNavigationHelper.getTitles(), mNavigationHelper.getCategories());
         // Set up the ViewPager with the TabLayout.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
+        mNavigationHelper = new MainNavigationHelper(getResources(), mViewPager);
+        mSectionsPagerAdapter = new MoviesSectionPagerAdapter(getSupportFragmentManager(), mNavigationHelper.getTitles(), mNavigationHelper.getCategories());
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
     }
 
@@ -95,11 +105,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class MoviesSectionPagerAdapter extends FragmentPagerAdapter {
+    public class MoviesSectionPagerAdapter extends FragmentStatePagerAdapter {
         String[] mTitles;
         MovieListCategory[] mCategories;
 
-        public MoviesSectionPagerAdapter(FragmentManager fm, String[] titles, MovieListCategory[] categories) {
+        private MoviesSectionPagerAdapter(FragmentManager fm, String[] titles, MovieListCategory[] categories) {
             super(fm);
             this.mTitles = titles;
             this.mCategories = categories;

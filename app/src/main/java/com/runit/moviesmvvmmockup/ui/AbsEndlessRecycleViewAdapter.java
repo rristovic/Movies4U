@@ -2,12 +2,12 @@ package com.runit.moviesmvvmmockup.ui;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.runit.moviesmvvmmockup.R;
 
@@ -15,12 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * Created by Radovan Ristovic on 3/1/2018.
- * Quantox.com
- * radovanr995@gmail.com
+/*
+  Created by Radovan Ristovic on 3/1/2018.
+  Quantox.com
+  radovanr995@gmail.com
  */
 
+/**
+ * RecycleView adapter which has to ability to add a loader at the end of the view when loading more data is being called and loading is in progress.
+ * Can only be used with {@link GridLayoutManager} and {@link LinearLayoutManager}.
+ *
+ * @param <T>  type of item that this adapter will hold.
+ * @param <VH> type of {@link RecyclerView.ViewHolder} that the adapter will populate data with.
+ */
 public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter {
     /**
      * Callback that's invoked when list has reached its last visible threshold, so loading more data is required.
@@ -33,7 +40,7 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
     }
 
     private final int VIEW_ITEM = 1;
-    private final int VIEW_PROG = 0;
+    private final int VIEW_LOADER = 0;
     private final RecyclerView mRecycleView;
     private LinearLayoutManager mLinearLayoutManager;
     private Context mContext;
@@ -69,7 +76,13 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
     };
 
 
-    public AbsEndlessRecycleViewAdapter(List<T> data, RecyclerView recyclerView) {
+    /**
+     * Public constructor. It requires {@link RecyclerView} object to be passed so the loader could be inserted at the bottom of the list when required to load more data.
+     *
+     * @param data         list of items.
+     * @param recyclerView recycle view to be manipulated with.
+     */
+    protected AbsEndlessRecycleViewAdapter(List<T> data, RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager) {
         mContext = recyclerView.getContext();
         if (data == null) {
             this.mData = new ArrayList<>();
@@ -77,32 +90,68 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
             this.mData = data;
         }
         mRecycleView = recyclerView;
-        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+        mRecycleView.setLayoutManager(layoutManager);
+        if (layoutManager instanceof LinearLayoutManager) {
             mLinearLayoutManager = (LinearLayoutManager) recyclerView
                     .getLayoutManager();
             recyclerView.addOnScrollListener(mScrollListener);
+            if (layoutManager instanceof GridLayoutManager) {
+                ((GridLayoutManager) layoutManager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                    @Override
+                    public int getSpanSize(int position) {
+                        switch (getItemViewType(position)) {
+                            case VIEW_ITEM:
+                                return 1;
+                            case VIEW_LOADER:
+                                return 2;
+                            default:
+                                return 1;
+                        }
+                    }
+                });
+            }
         } else {
+            // Try setting linear layout manager
             mLinearLayoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(mLinearLayoutManager);
             recyclerView.addOnScrollListener(mScrollListener);
+
         }
     }
 
-    public AbsEndlessRecycleViewAdapter(RecyclerView recyclerView) {
-        this(null, recyclerView);
+    public AbsEndlessRecycleViewAdapter(RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager) {
+        this(null, recyclerView, layoutManager);
     }
 
+    /**
+     * Gets an item from this adapter's current list of data.
+     *
+     * @param position of item in the list.
+     * @return item from the adapter's list.
+     */
     public T getItem(int position) {
         return mData.get(position);
     }
 
     @Override
     public int getItemViewType(int position) {
-        return mData.get(position) != null ? VIEW_ITEM : VIEW_PROG;
+        return mData.get(position) != null ? VIEW_ITEM : VIEW_LOADER;
     }
 
+    /**
+     * Method will be called when adapter requires {@link android.support.v7.widget.RecyclerView.ViewHolder} to be created and inflated with a view.
+     *
+     * @param parent view holder's view parent.
+     * @return newly created view holder.
+     */
     public abstract VH createViewHolder(ViewGroup parent);
 
+    /**
+     * Method will be called when adapter requires view holder to be populated with data.
+     *
+     * @param viewHolder holder to be populated.
+     * @param position   position of holder in the list.
+     */
     public abstract void populateViewHolder(VH viewHolder, int position);
 
     @Override
@@ -123,8 +172,15 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
         }
     }
 
+    /**
+     * Sets the minimum visible threshold for the list. This number indicates minimum amount of items to have below current scroll position
+     * before loading more items and before {@link OnLoadMoreListener#onLoadMore()} will be called.
+     *
+     * @param threshold must be greater than 1.
+     */
     public void setMinimunVisibleThreshold(int threshold) {
-        this.visibleThreshold = threshold;
+        if (threshold > 1)
+            this.visibleThreshold = threshold;
     }
 
     @Override
@@ -136,6 +192,11 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
         this.onLoadMoreListener = onLoadMoreListener;
     }
 
+    /**
+     * Set adapter's current list of items. If data if null, the current list of items will be cleared.
+     *
+     * @param data data to be set.
+     */
     public final void setData(@Nullable List<T> data) {
         if (data == null) {
             this.mData.clear();
@@ -146,6 +207,11 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
         notifyDataSetChanged();
     }
 
+    /**
+     * Adds list of items to current adapter's list of items. Hides the loader if it is present.
+     *
+     * @param data list of items to add if it's not null.
+     */
     public final void addData(List<T> data) {
         if (this.loading) {
             loading = false;
@@ -157,23 +223,33 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
         }
     }
 
+    /**
+     * Call this method when there are no more pages to load, in other words no more items to load so the loader should stay hidden when list reaches its threshold.
+     */
     public final void onLoadMoreComplete() {
         this.mRecycleView.removeOnScrollListener(mScrollListener);
     }
 
+    /**
+     * Returns the current adapter's context.
+     *
+     * @return adapter's context.
+     */
     protected Context getContext() {
         return mContext;
     }
 
-    public static class ProgressViewHolder extends RecyclerView.ViewHolder {
-        public ProgressBar progressBar;
-
-        public ProgressViewHolder(View v) {
+    private static class ProgressViewHolder extends RecyclerView.ViewHolder {
+        private ProgressViewHolder(View v) {
             super(v);
-            progressBar = (ProgressBar) v.findViewById(R.id.pb_loader);
         }
     }
 
+    /**
+     * Gets all the data that this adapter is holding.
+     *
+     * @return list of current data.
+     */
     public List<T> getData() {
         return mData;
     }

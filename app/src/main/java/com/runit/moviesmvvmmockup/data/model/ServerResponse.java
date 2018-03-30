@@ -14,14 +14,37 @@ import java.util.List;
 public class ServerResponse<T> {
     @Expose
     @SerializedName("results")
-    public List<T> results;
+    private List<T> results;
     @Expose
     @SerializedName("page")
-    public int page;
+    private int page;
     @Expose
     @SerializedName("total_pages")
-    public int total_pages;
+    private int total_pages;
     @Expose
     @SerializedName("total_results")
-    public int total_results;
+    private int total_results;
+
+    public ServerResponse(List<T> results, int page, int total_pages, int total_results) {
+        this.results = results;
+        this.page = page;
+        this.total_pages = total_pages;
+        this.total_results = total_results;
+    }
+
+    public List<T> getResults() {
+        return results;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public int getTotal_pages() {
+        return total_pages;
+    }
+
+    public int getTotal_results() {
+        return total_results;
+    }
 }
