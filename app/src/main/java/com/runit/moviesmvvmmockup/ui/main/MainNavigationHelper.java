@@ -12,6 +12,10 @@ import com.runit.moviesmvvmmockup.ui.main.movie_list.MovieListCategory;
  * radovanr995@gmail.com
  */
 
+/**
+ * Helper class that holds all available categories that will be in main navigation. Holds the reference to the title for each of the category.
+ * Provides method for switching pages.
+ */
 class MainNavigationHelper {
 
     // Hold the titles for fragments
@@ -34,21 +38,29 @@ class MainNavigationHelper {
     }
 
     /**
-     * Returns title array for all possible movies categories returned by {@link MainNavigationHelper#getCategories()}.
-     *
-     * @return movies titles.
+     * Retrieve the title string for fragment for provided page position.
+     * @param position page position. Cannot be greater than result from ({@link #getNumberOfCategories()} - 1).
+     * @return title string.
      */
-    String[] getTitles() {
-        return mTitles;
+    String getTitleForPosition(int position) {
+        return mTitles[position];
     }
 
     /**
-     * Returns all possible movie categories.
-     *
-     * @return {@link MovieListCategory} objects.
+     * Retrieve the movie category for provided page position.
+     * @param position page position. Cannot be greater than result from ({@link #getNumberOfCategories()} - 1).
+     * @return movie category.
      */
-    MovieListCategory[] getCategories() {
-        return mCategories;
+    MovieListCategory getCategoryForPosition(int position) {
+        return mCategories[position];
+    }
+
+    /**
+     * Retrieve total number of available movie's categories.
+     * @return number of categories.
+     */
+    int getNumberOfCategories() {
+        return mCategories.length;
     }
 
     /**

@@ -7,7 +7,6 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                             mNavigationHelper.switchToPage(MovieListCategory.POPULAR);
                             break;
                         }
-                        case  R.id.nav_top_rated: {
+                        case R.id.nav_top_rated: {
                             mNavigationHelper.switchToPage(MovieListCategory.TOP_RATED);
                             break;
                         }
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the TabLayout.
         mViewPager = findViewById(R.id.container);
         mNavigationHelper = new MainNavigationHelper(getResources(), mViewPager);
-        mSectionsPagerAdapter = new MoviesSectionPagerAdapter(getSupportFragmentManager(), mNavigationHelper.getTitles(), mNavigationHelper.getCategories());
+        mSectionsPagerAdapter = new MoviesSectionPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -105,32 +104,31 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Adapter responsible for instantiating fragments that hold the movie list.
+     */
     public class MoviesSectionPagerAdapter extends FragmentStatePagerAdapter {
-        String[] mTitles;
-        MovieListCategory[] mCategories;
 
-        private MoviesSectionPagerAdapter(FragmentManager fm, String[] titles, MovieListCategory[] categories) {
+        private MoviesSectionPagerAdapter(FragmentManager fm) {
             super(fm);
-            this.mTitles = titles;
-            this.mCategories = categories;
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return MovieListFragment.newInstance(mCategories[position]);
+            return MovieListFragment.newInstance(mNavigationHelper.getCategoryForPosition(position));
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return mTitles.length;
+            return mNavigationHelper.getNumberOfCategories();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mTitles[position];
+            return mNavigationHelper.getTitleForPosition(position);
         }
     }
 

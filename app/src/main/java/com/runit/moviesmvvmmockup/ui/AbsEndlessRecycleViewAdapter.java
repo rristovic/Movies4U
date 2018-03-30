@@ -103,7 +103,7 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
                             case VIEW_ITEM:
                                 return 1;
                             case VIEW_LOADER:
-                                return 2;
+                                return ((GridLayoutManager) mLinearLayoutManager).getSpanCount();
                             default:
                                 return 1;
                         }
