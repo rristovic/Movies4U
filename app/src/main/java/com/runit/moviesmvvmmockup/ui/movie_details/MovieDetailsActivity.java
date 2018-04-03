@@ -31,12 +31,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
         ActivityMovieDetailsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_movie_details);
         MovieDetailsViewModel viewModel = ViewModelProviders.of(this).get(MovieDetailsViewModel.class);
         binding.setMovieDetailsViewModel(viewModel);
-        viewModel.getMovie(getIntent().getLongExtra(KEY_ID, -1), getIntent().getStringExtra(KEY_NAME)).observe(this, movieModel -> {
+        viewModel.getMovie(getIntent().getLongExtra(KEY_ID, -1)).observe(this, movieModel -> {
             if (movieModel != null) {
                 binding.setMovie(movieModel);
             }
         });
         Picasso.get().load(getIntent().getStringExtra(KEY_THUMBNAIL)).into(binding.ivMovieThumbnail);
+        binding.tvMovieTitle.setText(getIntent().getStringExtra(KEY_NAME));
     }
 
     public static void startActivity(Context context, long movieId, String movieName, String thumbnailUrl) {

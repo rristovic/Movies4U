@@ -5,7 +5,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Intent;
 import android.databinding.ObservableBoolean;
-import android.databinding.ObservableField;
 import android.net.Uri;
 import android.view.View;
 
@@ -25,16 +24,13 @@ import retrofit2.Response;
 public class MovieDetailsViewModel extends ViewModel {
     public ObservableBoolean isLoading = new ObservableBoolean(true);
     private MutableLiveData<MovieModel> mMovie;
-    // Field used for displaying movie title
-    public ObservableField<String> title = new ObservableField<>("");
 
     /**
      * Helper method for download movie details information.
      *
      * @param id Movie id.
      */
-    public LiveData<MovieModel> getMovie(long id, String movieName) {
-        title.set(movieName);
+    public LiveData<MovieModel> getMovie(long id) {
         if (mMovie == null) {
             mMovie = new MutableLiveData<>();
             fetchMovie(id);
@@ -54,11 +50,6 @@ public class MovieDetailsViewModel extends ViewModel {
             public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     mMovie.setValue(response.body());
-                    String title = response.body().getTitle();
-                    if (response.body().getYear() != null) {
-                        title += " (" + response.body().getYear().substring(0, response.body().getYear().indexOf("-")) + ")";
-                        MovieDetailsViewModel.this.title.set(title);
-                    }
                 }
                 isLoading.set(false);
             }

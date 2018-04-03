@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.runit.moviesmvvmmockup.ui.movie_details.MovieDetailsViewModel;
 
 import java.util.List;
 
@@ -197,6 +198,15 @@ public class MovieModel {
 
     public Double getVoteAverage() {
         return voteAverage;
+    }
+
+
+    public String getDisplayTitle() {
+        String title = this.title;
+        if (this.releaseDate != null) {
+            title += " (" + this.releaseDate.substring(0, this.releaseDate.indexOf("-")) + ")";
+        }
+        return title;
     }
 
     public Integer getVoteCount() {
