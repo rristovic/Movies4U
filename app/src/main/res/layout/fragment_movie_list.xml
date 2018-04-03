@@ -3,7 +3,7 @@
         <import type="android.view.View"/>
         <variable
             name="movieListVM"
-            type="com.runit.moviesmvvmmockup.ui.main.movie_list.MovieListViewModel" />
+            type="com.runit.moviesmvvmmockup.ui.movie_list.MovieListViewModel" />
     </data>
 
     <RelativeLayout

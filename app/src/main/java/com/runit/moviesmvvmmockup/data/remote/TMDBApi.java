@@ -8,6 +8,7 @@ import com.runit.moviesmvvmmockup.data.model.Token;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -37,6 +38,10 @@ public interface TMDBApi {
 
     @GET("movie/upcoming")
     Call<ServerResponse<MovieModel>> getUpcoming(@Query("page") Integer page);
+
+
+    @GET("movie/{movie_id}")
+    Call<MovieModel> getMovieDetails(@Path("movie_id") long movieId);
 
 
 }

@@ -1,9 +1,10 @@
-package com.runit.moviesmvvmmockup.ui.main.movie_list;
+package com.runit.moviesmvvmmockup.ui.movie_list;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.runit.moviesmvvmmockup.data.model.MovieModel;
 import com.runit.moviesmvvmmockup.databinding.MovieItemBinding;
@@ -18,8 +19,11 @@ import com.squareup.picasso.Picasso;
 
 public class MovieListAdapter extends AbsEndlessRecycleViewAdapter<MovieModel, MovieListAdapter.MovieItemViewHolder> {
 
-    public MovieListAdapter(RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager) {
+    private final AdapterView.OnItemClickListener mListener;
+
+    public MovieListAdapter(RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager, AdapterView.OnItemClickListener listener) {
         super(recyclerView, layoutManager);
+        this.mListener = listener;
     }
 
     @Override
@@ -36,18 +40,24 @@ public class MovieListAdapter extends AbsEndlessRecycleViewAdapter<MovieModel, M
         Picasso.get().load(item.getThumbnailUrl()).into(viewHolder.binding.ivMovieThumbnail);
     }
 
-    class MovieItemViewHolder extends RecyclerView.ViewHolder {
+    class MovieItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final MovieItemBinding binding;
 
         public MovieItemViewHolder(MovieItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            this.binding.getRoot().setOnClickListener(this);
         }
 
         public void bind(MovieModel movieModel) {
             this.binding.setMovie(movieModel);
             // Must be run to populate view with data immediately, so RecycleView can measure properly
             this.binding.executePendingBindings();
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onItemClick(null, v, getAdapterPosition(), getItemId());
         }
     }
 }

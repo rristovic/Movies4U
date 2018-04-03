@@ -1,4 +1,4 @@
-package com.runit.moviesmvvmmockup.ui.main.movie_list;
+package com.runit.moviesmvvmmockup.ui.movie_list;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;

@@ -29,7 +29,7 @@
             android:layout_below="@id/iv_movie_thumbnail"
             android:padding="16dp"
             android:text="@{movie.title}"
-            android:textColor="@color/text_black"
+            android:textColor="@color/text_primary_black"
             android:textSize="@dimen/text_size_medium" />
 
     </RelativeLayout>

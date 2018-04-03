@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.support.v4.view.ViewPager;
 
 import com.runit.moviesmvvmmockup.R;
-import com.runit.moviesmvvmmockup.ui.main.movie_list.MovieListCategory;
+import com.runit.moviesmvvmmockup.ui.movie_list.MovieListCategory;
 
 /**
  * Created by Radovan Ristovic on 3/30/2018.

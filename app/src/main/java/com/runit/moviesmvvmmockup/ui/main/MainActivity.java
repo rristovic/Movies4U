@@ -17,8 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.runit.moviesmvvmmockup.R;
-import com.runit.moviesmvvmmockup.ui.main.movie_list.MovieListCategory;
-import com.runit.moviesmvvmmockup.ui.main.movie_list.MovieListFragment;
+import com.runit.moviesmvvmmockup.ui.movie_list.MovieListCategory;
+import com.runit.moviesmvvmmockup.ui.movie_list.MovieListFragment;
 
 /**
  * Created by Radovan Ristovic on 3/29/2018.

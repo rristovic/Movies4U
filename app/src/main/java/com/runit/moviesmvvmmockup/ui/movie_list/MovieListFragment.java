@@ -1,4 +1,4 @@
-package com.runit.moviesmvvmmockup.ui.main.movie_list;
+package com.runit.moviesmvvmmockup.ui.movie_list;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.runit.moviesmvvmmockup.R;
+import com.runit.moviesmvvmmockup.data.model.MovieModel;
 import com.runit.moviesmvvmmockup.databinding.FragmentMovieListBinding;
+import com.runit.moviesmvvmmockup.ui.movie_details.MovieDetailsActivity;
 import com.runit.moviesmvvmmockup.utils.UIUtil;
 
 /**
@@ -42,7 +44,10 @@ public class MovieListFragment extends Fragment {
         MovieListViewModel viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
         binding.setMovieListVM(viewModel);
         // Setup list
-        mAdapter = new MovieListAdapter(binding.rvMovies, new GridLayoutManager(getActivity(), 2));
+        mAdapter = new MovieListAdapter(binding.rvMovies, new GridLayoutManager(getActivity(), 2), (parent, view, position, id) -> {
+            MovieModel movieModel = mAdapter.getItem(position);
+            MovieDetailsActivity.startActivity(getActivity(), movieModel.getId(), movieModel.getTitle(), movieModel.getThumbnailUrl());
+        });
         binding.rvMovies.setAdapter(mAdapter);
         viewModel.getMoviesForCategory((MovieListCategory) getArguments().getSerializable(ARG_FRAG_CATEGORY)).observe(this, movieModels -> {
             if (movieModels != null) {
