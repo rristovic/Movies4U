@@ -1,4 +1,4 @@
-package com.runit.moviesmvvmmockup.ui.login;
+package com.runit.moviesmvvmmockup.ui.profile;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;

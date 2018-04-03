@@ -5,7 +5,7 @@
         <import type="android.view.View"/>
         <variable
             name="loginViewModel"
-            type="com.runit.moviesmvvmmockup.ui.login.LoginViewModel" />
+            type="com.runit.moviesmvvmmockup.ui.profile.LoginViewModel" />
     </data>
 
     <RelativeLayout

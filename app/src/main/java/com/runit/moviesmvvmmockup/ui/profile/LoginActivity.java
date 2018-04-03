@@ -1,4 +1,4 @@
-package com.runit.moviesmvvmmockup.ui.login;
+package com.runit.moviesmvvmmockup.ui.profile;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;

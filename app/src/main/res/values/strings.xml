@@ -24,6 +24,8 @@
     <string name="budget">Budget</string>
     <string name="revenue">Revenue</string>
     <string name="homepage">Homepage</string>
+    <string name="account">Account</string>
+    <string name="profile">Profile</string>
 
     <string-array name="movie_categories">
         <item>@string/top_rated</item>
