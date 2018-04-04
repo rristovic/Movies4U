@@ -1,6 +1,8 @@
-package com.runit.moviesmvvmmockup.ui.profile;
+package com.runit.moviesmvvmmockup.ui.profile.login;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +14,7 @@ import com.runit.moviesmvvmmockup.databinding.ActivityLoginBinding;
 import com.runit.moviesmvvmmockup.ui.main.MainActivity;
 import com.runit.moviesmvvmmockup.utils.UIUtil;
 
-public class LoginActivity extends AppCompatActivity {
+public class  LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
     private WebView mWebView;
@@ -49,5 +51,9 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    public static void startActivity(Context c){
+        c.startActivity(new Intent(c, LoginActivity.class));
     }
 }

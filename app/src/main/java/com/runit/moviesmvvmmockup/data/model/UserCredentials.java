@@ -1,12 +1,10 @@
-package com.runit.moviesmvvmmockup.data;
+package com.runit.moviesmvvmmockup.data.model;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.runit.moviesmvvmmockup.data.model.Session;
-import com.runit.moviesmvvmmockup.data.model.Token;
 
 /**
  * Created by Radovan Ristovic on 3/30/2018.

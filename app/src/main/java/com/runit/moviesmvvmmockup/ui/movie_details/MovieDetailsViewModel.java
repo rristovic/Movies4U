@@ -1,19 +1,18 @@
 package com.runit.moviesmvvmmockup.ui.movie_details;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Intent;
 import android.databinding.ObservableBoolean;
 import android.net.Uri;
 import android.view.View;
 
+import com.runit.moviesmvvmmockup.data.MoviesRepository;
+import com.runit.moviesmvvmmockup.data.RepositoryFactory;
 import com.runit.moviesmvvmmockup.data.model.MovieModel;
-import com.runit.moviesmvvmmockup.data.remote.RetrofitClient;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.runit.moviesmvvmmockup.utils.exception.ErrorBundle;
+import com.runit.moviesmvvmmockup.utils.exception.ErrorListener;
 
 /**
  * Created by Radovan Ristovic on 4/3/2018.
@@ -22,17 +21,28 @@ import retrofit2.Response;
  */
 
 public class MovieDetailsViewModel extends ViewModel {
+    // Flag indicating is data is still loading
     public ObservableBoolean isLoading = new ObservableBoolean(true);
-    private MutableLiveData<MovieModel> mMovie;
+    // Current movie data
+    private MediatorLiveData<MovieModel> mMovie;
+    // Repo instance
+    private MoviesRepository mRepository;
+    // Error listener
+    private ErrorListener mErrorListener;
+
+    public MovieDetailsViewModel() {
+        mRepository = RepositoryFactory.getMoviesRepository();
+    }
 
     /**
-     * Helper method for download movie details information.
+     * Retrieves movie's details.
      *
-     * @param id Movie id.
+     * @param id Id of the requested movie.
      */
-    public LiveData<MovieModel> getMovie(long id) {
+    public LiveData<MovieModel> getMovie(long id, ErrorListener errorListener) {
         if (mMovie == null) {
-            mMovie = new MutableLiveData<>();
+            this.mErrorListener = errorListener;
+            mMovie = new MediatorLiveData<>();
             fetchMovie(id);
         }
 
@@ -45,22 +55,26 @@ public class MovieDetailsViewModel extends ViewModel {
      * @param id Movie's id which details should be downloaded.
      */
     private void fetchMovie(long id) {
-        RetrofitClient.getClient().getMovieDetails(id).enqueue(new Callback<MovieModel>() {
-            @Override
-            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    mMovie.setValue(response.body());
-                }
-                isLoading.set(false);
+        final LiveData<MovieModel> source = mRepository.getMovie(id);
+        mMovie.addSource(source, movieModel -> {
+            if (movieModel != null) {
+                mMovie.setValue(movieModel);
+            } else {
+                // TODO : handle error
+                mErrorListener.onErrorCallback(new ErrorBundle(ErrorBundle.ErrorMessage.SERVER_ERROR));
             }
 
-            @Override
-            public void onFailure(Call<MovieModel> call, Throwable t) {
+            if (isLoading.get()) {
                 isLoading.set(false);
             }
         });
     }
 
+    /**
+     * Homepage view listener.
+     *
+     * @param v View clicked.
+     */
     public void onHomepageClicked(View v) {
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(mMovie.getValue().getHomepage()));

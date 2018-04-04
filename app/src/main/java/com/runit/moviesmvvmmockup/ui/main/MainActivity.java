@@ -17,8 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.runit.moviesmvvmmockup.R;
-import com.runit.moviesmvvmmockup.ui.movie_list.MovieListCategory;
+import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
 import com.runit.moviesmvvmmockup.ui.movie_list.MovieListFragment;
+import com.runit.moviesmvvmmockup.ui.profile.login.LoginActivity;
 
 /**
  * Created by Radovan Ristovic on 3/29/2018.
@@ -62,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.nav_upcoming: {
                             mNavigationHelper.switchToPage(MovieListCategory.UPCOMING);
                             break;
+                        }
+                        case R.id.nav_my_profile: {
+                            LoginActivity.startActivity(MainActivity.this);
                         }
                     }
                     return true;

@@ -1,4 +1,4 @@
-package com.runit.moviesmvvmmockup.ui.profile;
+package com.runit.moviesmvvmmockup.ui.profile.login;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
@@ -7,7 +7,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.databinding.ObservableBoolean;
 import android.support.annotation.NonNull;
 
-import com.runit.moviesmvvmmockup.data.UserCredentials;
+import com.runit.moviesmvvmmockup.data.model.UserCredentials;
 import com.runit.moviesmvvmmockup.data.model.Account;
 import com.runit.moviesmvvmmockup.data.model.Session;
 import com.runit.moviesmvvmmockup.data.model.Token;
@@ -76,7 +76,7 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     /**
-     * Helper method for retrieving new request token from the network api.
+     * Helper method for retrieving new request token from the network api and generating login page for the user.
      */
     private void fetchToken() {
         RetrofitClient.getClient().getAuthToken().enqueue(new Callback<Token>() {

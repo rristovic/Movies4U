@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.support.v4.view.ViewPager;
 
 import com.runit.moviesmvvmmockup.R;
-import com.runit.moviesmvvmmockup.ui.movie_list.MovieListCategory;
+import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
 
 /**
  * Created by Radovan Ristovic on 3/30/2018.
@@ -33,7 +33,7 @@ class MainNavigationHelper {
     MainNavigationHelper(Resources res, ViewPager pager) {
         this.mPager = pager;
         this.mTitles = res.getStringArray(R.array.movie_categories);
-        // Creating categories for movie titles, num of titles = num of categories
+        // Creating categories for movie titles, num of titles = num of categories, must be in the same order
         this.mCategories = new MovieListCategory[]{MovieListCategory.TOP_RATED, MovieListCategory.UPCOMING, MovieListCategory.NOW_PLAYING, MovieListCategory.POPULAR};
     }
 

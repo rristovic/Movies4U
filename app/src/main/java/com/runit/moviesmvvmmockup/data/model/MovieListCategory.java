@@ -1,4 +1,4 @@
-package com.runit.moviesmvvmmockup.ui.movie_list;
+package com.runit.moviesmvvmmockup.data.model;
 
 /**
  * Created by Radovan Ristovic on 3/29/2018.

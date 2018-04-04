@@ -11,11 +11,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.databinding.ActivityMovieDetailsBinding;
+import com.runit.moviesmvvmmockup.utils.UIUtil;
 import com.squareup.picasso.Picasso;
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -31,11 +33,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
         ActivityMovieDetailsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_movie_details);
         MovieDetailsViewModel viewModel = ViewModelProviders.of(this).get(MovieDetailsViewModel.class);
         binding.setMovieDetailsViewModel(viewModel);
-        viewModel.getMovie(getIntent().getLongExtra(KEY_ID, -1)).observe(this, movieModel -> {
-            if (movieModel != null) {
-                binding.setMovie(movieModel);
-            }
-        });
+        viewModel.getMovie(getIntent().getLongExtra(KEY_ID, -1), error -> UIUtil.showToast(MovieDetailsActivity.this, error.getMessage()))
+                .observe(this, movieModel -> {
+                    if (movieModel != null) {
+                        binding.setMovie(movieModel);
+                    }
+                });
         Picasso.get().load(getIntent().getStringExtra(KEY_THUMBNAIL)).into(binding.ivMovieThumbnail);
         binding.tvMovieTitle.setText(getIntent().getStringExtra(KEY_NAME));
     }

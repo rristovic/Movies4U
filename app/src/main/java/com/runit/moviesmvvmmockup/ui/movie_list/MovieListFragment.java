@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.runit.moviesmvvmmockup.R;
+import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
 import com.runit.moviesmvvmmockup.data.model.MovieModel;
 import com.runit.moviesmvvmmockup.databinding.FragmentMovieListBinding;
 import com.runit.moviesmvvmmockup.ui.movie_details.MovieDetailsActivity;
@@ -48,15 +49,19 @@ public class MovieListFragment extends Fragment {
             MovieModel movieModel = mAdapter.getItem(position);
             MovieDetailsActivity.startActivity(getActivity(), movieModel.getId(), movieModel.getTitle(), movieModel.getThumbnailUrl());
         });
+        mAdapter.setOnLoadMoreListener(viewModel::getNextPage);
         binding.rvMovies.setAdapter(mAdapter);
-        viewModel.getMoviesForCategory((MovieListCategory) getArguments().getSerializable(ARG_FRAG_CATEGORY)).observe(this, movieModels -> {
-            if (movieModels != null) {
-                mAdapter.addData(movieModels);
-            } else {
-                UIUtil.showToast(getActivity(), getString(R.string.movies_failure));
-            }
-
-        });
+        viewModel.getMoviesForCategory((MovieListCategory) getArguments().getSerializable(ARG_FRAG_CATEGORY), error ->
+                UIUtil.showToast(getActivity(), error.getMessage()))
+                .observe(this, movieModels -> {
+                    if (movieModels != null) {
+                        if (movieModels.size() == 0) {
+                            // If loading zero items, it means no more items to load
+                            mAdapter.onLoadMoreComplete();
+                        }
+                        mAdapter.addData(movieModels);
+                    }
+                });
 
         return binding.getRoot();
     }
