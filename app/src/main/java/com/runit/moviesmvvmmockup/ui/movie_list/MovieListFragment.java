@@ -60,7 +60,7 @@ public class MovieListFragment extends Fragment {
                         }
                         mAdapter.addData(movieResults.get());
                     } else {
-                        UIUtil.showToast(getActivity(), movieResults.error().getMessage());
+                        UIUtil.showShortToast(getActivity(), movieResults.error().getMessage());
                     }
                 });
 

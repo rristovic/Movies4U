@@ -10,12 +10,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.data.model.MovieModel;
 import com.runit.moviesmvvmmockup.databinding.ActivitySearchBinding;
 import com.runit.moviesmvvmmockup.ui.movie_details.MovieDetailsActivity;
 import com.runit.moviesmvvmmockup.ui.movie_list.MovieListAdapter;
+import com.runit.moviesmvvmmockup.utils.UIUtil;
 
 public class SearchActivity extends AppCompatActivity {
     private SearchView mSvSearch;
@@ -35,11 +38,12 @@ public class SearchActivity extends AppCompatActivity {
         mViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         binding.setSearchVM(mViewModel);
         mViewModel.getSearchResults().observe(this, moviesResult -> {
-            if(moviesResult.isSuccess()) {
+            if (moviesResult.isSuccess()) {
                 if (moviesResult.get().size() == 0)
                     mAdapter.onLoadMoreComplete();
                 mAdapter.addData(moviesResult.get());
             } else {
+                UIUtil.showShortToast(SearchActivity.this, moviesResult.error().getMessage());
                 mAdapter.onLoadMoreComplete();
             }
         });
@@ -48,15 +52,25 @@ public class SearchActivity extends AppCompatActivity {
             MovieModel movieModel = mAdapter.getItem(position);
             MovieDetailsActivity.startActivity(SearchActivity.this, movieModel.getId(), movieModel.getTitle(), movieModel.getThumbnailUrl());
         });
-        mAdapter.setOnLoadMoreListener(mViewModel::getNextPage);
         binding.rvMovies.setAdapter(mAdapter);
         // init search
         mSvSearch = findViewById(R.id.sv_search);
+        mSvSearch.post(() -> {
+            // Hide initial view focus
+            mSvSearch.clearFocus();
+            if (mSvSearch != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null)
+                    imm.hideSoftInputFromWindow(mSvSearch.getWindowToken(), 0);
+            }
+        });
         mSvSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Reset adapter data
                 mAdapter.clearData();
+                // set load more listener
+                mAdapter.setOnLoadMoreListener(mViewModel::getNextPage);
                 // Send new search query
                 mViewModel.search(query);
                 return false;

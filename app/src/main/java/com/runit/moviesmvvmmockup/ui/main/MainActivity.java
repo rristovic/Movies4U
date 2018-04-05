@@ -16,6 +16,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private DrawerLayout mDrawerLayout;
     private MainNavigationHelper mNavigationHelper;
+    private SearchView mSvSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +90,16 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         // Init search
-        ((SearchView)findViewById(R.id.sv_search)).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSvSearch = findViewById(R.id.sv_search);
+        mSvSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 SearchActivity.startActivity(MainActivity.this, query);
-                return false;
+                // Clear search view and close
+                mSvSearch.setQuery(null, false);
+                mSvSearch.clearFocus();
+                mSvSearch.setIconified(true);
+                return true;
             }
 
             @Override
