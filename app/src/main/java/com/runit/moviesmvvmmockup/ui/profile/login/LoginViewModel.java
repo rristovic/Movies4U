@@ -7,7 +7,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.databinding.ObservableBoolean;
 import android.support.annotation.NonNull;
 
-import com.runit.moviesmvvmmockup.data.model.UserCredentials;
+import com.runit.moviesmvvmmockup.data.local.UserCredentials;
 import com.runit.moviesmvvmmockup.data.model.Account;
 import com.runit.moviesmvvmmockup.data.model.Session;
 import com.runit.moviesmvvmmockup.data.model.Token;
@@ -38,7 +38,7 @@ public class LoginViewModel extends AndroidViewModel {
     /**
      * Method for checking if the user is currently logged in.
      *
-     * @return true is the user is logged in and can continue with user flow.
+     * @return true is the user is logged in and can continue with user flow, false otherwise.
      */
     public LiveData<Boolean> isUserLoggedIn() {
         mUserCredentials = UserCredentials.getInstance(getApplication());

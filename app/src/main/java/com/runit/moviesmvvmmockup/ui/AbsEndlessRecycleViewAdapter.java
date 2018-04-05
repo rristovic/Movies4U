@@ -14,13 +14,6 @@ import com.runit.moviesmvvmmockup.R;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/*
-  Created by Radovan Ristovic on 3/1/2018.
-  Quantox.com
-  radovanr995@gmail.com
- */
-
 /**
  * RecycleView adapter which has to ability to add a loader at the end of the view when loading more data is being called and loading is in progress.
  * Can only be used with {@link GridLayoutManager} and {@link LinearLayoutManager}.
@@ -63,14 +56,15 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
                     && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
                 // End has been reached
                 // Do something
-                if (onLoadMoreListener != null) {
-                    onLoadMoreListener.onLoadMore();
-                }
                 loading = true;
                 mRecycleView.post(() -> {
                     mData.add(null);
                     notifyItemInserted(mData.size() - 1);
+                    if (onLoadMoreListener != null) {
+                        onLoadMoreListener.onLoadMore();
+                    }
                 });
+
             }
         }
     };
@@ -87,7 +81,7 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
         if (data == null) {
             this.mData = new ArrayList<>();
         } else {
-            this.mData = data;
+            this.mData = new ArrayList<>(data);
         }
         mRecycleView = recyclerView;
         mRecycleView.setLayoutManager(layoutManager);
@@ -124,7 +118,7 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
     }
 
     /**
-     * Gets an item from this adapter's current list of data.
+     * Gets a copy of an item from this adapter's current list of data.
      *
      * @param position of item in the list.
      * @return item from the adapter's list.
@@ -214,8 +208,7 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
      */
     public final void addData(List<T> data) {
         if (this.loading) {
-            loading = false;
-            mData.remove(mData.size() - 1);
+            removeLoader();
         }
         if (data != null) {
             this.mData.addAll(data);
@@ -224,10 +217,28 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
     }
 
     /**
+     * Delete all item currently hold by this adapter.
+     */
+    public final void clearData() {
+        this.mData.clear();
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Helper method for removing loader spinner.
+     */
+    private void removeLoader() {
+        loading = false;
+        if (mData.size() > 0)
+            mData.remove(mData.size() - 1);
+    }
+
+    /**
      * Call this method when there are no more pages to load, in other words no more items to load so the loader should stay hidden when list reaches its threshold.
      */
     public final void onLoadMoreComplete() {
         this.mRecycleView.removeOnScrollListener(mScrollListener);
+        this.removeLoader();
     }
 
     /**
@@ -246,11 +257,11 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
     }
 
     /**
-     * Gets all the data that this adapter is holding.
+     * Gets a copy of all data that this adapter is holding.
      *
      * @return list of current data.
      */
     public List<T> getData() {
-        return mData;
+        return new ArrayList<>(mData);
     }
 }

@@ -51,15 +51,16 @@ public class MovieListFragment extends Fragment {
         });
         mAdapter.setOnLoadMoreListener(viewModel::getNextPage);
         binding.rvMovies.setAdapter(mAdapter);
-        viewModel.getMoviesForCategory((MovieListCategory) getArguments().getSerializable(ARG_FRAG_CATEGORY), error ->
-                UIUtil.showToast(getActivity(), error.getMessage()))
-                .observe(this, movieModels -> {
-                    if (movieModels != null) {
-                        if (movieModels.size() == 0) {
+        viewModel.getMoviesForCategory((MovieListCategory) getArguments().getSerializable(ARG_FRAG_CATEGORY))
+                .observe(this, movieResults -> {
+                    if (movieResults.isSuccess()) {
+                        if (movieResults.get().size() == 0) {
                             // If loading zero items, it means no more items to load
                             mAdapter.onLoadMoreComplete();
                         }
-                        mAdapter.addData(movieModels);
+                        mAdapter.addData(movieResults.get());
+                    } else {
+                        UIUtil.showToast(getActivity(), movieResults.error().getMessage());
                     }
                 });
 

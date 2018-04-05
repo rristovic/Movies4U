@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +20,9 @@ import android.view.MenuItem;
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
 import com.runit.moviesmvvmmockup.ui.movie_list.MovieListFragment;
+import com.runit.moviesmvvmmockup.ui.profile.ProfileActivity;
 import com.runit.moviesmvvmmockup.ui.profile.login.LoginActivity;
+import com.runit.moviesmvvmmockup.ui.search.SearchActivity;
 
 /**
  * Created by Radovan Ristovic on 3/29/2018.
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         }
                         case R.id.nav_my_profile: {
-                            LoginActivity.startActivity(MainActivity.this);
+                            ProfileActivity.startActivity(MainActivity.this);
                         }
                     }
                     return true;
@@ -83,6 +86,20 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        // Init search
+        ((SearchView)findViewById(R.id.sv_search)).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                SearchActivity.startActivity(MainActivity.this, query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     @Override

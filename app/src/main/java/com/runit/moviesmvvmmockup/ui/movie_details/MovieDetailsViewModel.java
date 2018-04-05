@@ -3,16 +3,12 @@ package com.runit.moviesmvvmmockup.ui.movie_details;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.content.Intent;
 import android.databinding.ObservableBoolean;
-import android.net.Uri;
-import android.view.View;
 
 import com.runit.moviesmvvmmockup.data.MoviesRepository;
-import com.runit.moviesmvvmmockup.data.RepositoryFactory;
+import com.runit.moviesmvvmmockup.data.RepositoryProvider;
 import com.runit.moviesmvvmmockup.data.model.MovieModel;
-import com.runit.moviesmvvmmockup.utils.exception.ErrorBundle;
-import com.runit.moviesmvvmmockup.utils.exception.ErrorListener;
+import com.runit.moviesmvvmmockup.data.model.Result;
 
 /**
  * Created by Radovan Ristovic on 4/3/2018.
@@ -24,14 +20,12 @@ public class MovieDetailsViewModel extends ViewModel {
     // Flag indicating is data is still loading
     public ObservableBoolean isLoading = new ObservableBoolean(true);
     // Current movie data
-    private MediatorLiveData<MovieModel> mMovie;
+    private MediatorLiveData<Result<MovieModel>> mMovie;
     // Repo instance
     private MoviesRepository mRepository;
-    // Error listener
-    private ErrorListener mErrorListener;
 
     public MovieDetailsViewModel() {
-        mRepository = RepositoryFactory.getMoviesRepository();
+        mRepository = RepositoryProvider.getMoviesRepository();
     }
 
     /**
@@ -39,9 +33,8 @@ public class MovieDetailsViewModel extends ViewModel {
      *
      * @param id Id of the requested movie.
      */
-    public LiveData<MovieModel> getMovie(long id, ErrorListener errorListener) {
+    public LiveData<Result<MovieModel>> getMovie(long id) {
         if (mMovie == null) {
-            this.mErrorListener = errorListener;
             mMovie = new MediatorLiveData<>();
             fetchMovie(id);
         }
@@ -55,29 +48,13 @@ public class MovieDetailsViewModel extends ViewModel {
      * @param id Movie's id which details should be downloaded.
      */
     private void fetchMovie(long id) {
-        final LiveData<MovieModel> source = mRepository.getMovie(id);
+        final LiveData<Result<MovieModel>> source = mRepository.getMovie(id);
         mMovie.addSource(source, movieModel -> {
-            if (movieModel != null) {
-                mMovie.setValue(movieModel);
-            } else {
-                // TODO : handle error
-                mErrorListener.onErrorCallback(new ErrorBundle(ErrorBundle.ErrorMessage.SERVER_ERROR));
-            }
+            mMovie.setValue(movieModel);
 
             if (isLoading.get()) {
                 isLoading.set(false);
             }
         });
-    }
-
-    /**
-     * Homepage view listener.
-     *
-     * @param v View clicked.
-     */
-    public void onHomepageClicked(View v) {
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(mMovie.getValue().getHomepage()));
-        v.getContext().startActivity(i);
     }
 }

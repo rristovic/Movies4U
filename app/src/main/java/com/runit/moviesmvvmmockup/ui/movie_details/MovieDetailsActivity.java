@@ -7,11 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -33,14 +33,21 @@ public class MovieDetailsActivity extends AppCompatActivity {
         ActivityMovieDetailsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_movie_details);
         MovieDetailsViewModel viewModel = ViewModelProviders.of(this).get(MovieDetailsViewModel.class);
         binding.setMovieDetailsViewModel(viewModel);
-        viewModel.getMovie(getIntent().getLongExtra(KEY_ID, -1), error -> UIUtil.showToast(MovieDetailsActivity.this, error.getMessage()))
+        viewModel.getMovie(getIntent().getLongExtra(KEY_ID, -1))
                 .observe(this, movieModel -> {
-                    if (movieModel != null) {
-                        binding.setMovie(movieModel);
+                    if (movieModel.isSuccess()) {
+                        binding.setMovie(movieModel.get());
+                    } else {
+                        UIUtil.showToast(MovieDetailsActivity.this, movieModel.error().getMessage());
                     }
                 });
         Picasso.get().load(getIntent().getStringExtra(KEY_THUMBNAIL)).into(binding.ivMovieThumbnail);
         binding.tvMovieTitle.setText(getIntent().getStringExtra(KEY_NAME));
+        binding.vgHomepage.setOnClickListener(v -> {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(binding.getMovie().getHomepage()));
+            v.getContext().startActivity(i);
+        });
     }
 
     public static void startActivity(Context context, long movieId, String movieName, String thumbnailUrl) {

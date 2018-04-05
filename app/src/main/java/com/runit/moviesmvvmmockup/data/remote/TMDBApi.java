@@ -39,9 +39,9 @@ public interface TMDBApi {
     @GET("movie/upcoming")
     Call<ServerResponse<MovieModel>> getUpcoming(@Query("page") Integer page);
 
-
     @GET("movie/{movie_id}")
     Call<MovieModel> getMovieDetails(@Path("movie_id") long movieId);
 
-
+    @GET("search/movie?include_adult=true")
+    Call<ServerResponse<MovieModel>> search(@Query("query") String searchQuery, @Query("page") Integer page);
 }

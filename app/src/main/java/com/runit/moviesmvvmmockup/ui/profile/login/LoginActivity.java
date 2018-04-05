@@ -12,6 +12,7 @@ import android.webkit.WebViewClient;
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.databinding.ActivityLoginBinding;
 import com.runit.moviesmvvmmockup.ui.main.MainActivity;
+import com.runit.moviesmvvmmockup.ui.profile.ProfileActivity;
 import com.runit.moviesmvvmmockup.utils.UIUtil;
 
 public class  LoginActivity extends AppCompatActivity {
@@ -39,7 +40,6 @@ public class  LoginActivity extends AppCompatActivity {
 
         mViewModel.isUserLoggedIn().observe(this, isLoggedIn -> {
             if (isLoggedIn != null && isLoggedIn) {
-                MainActivity.startActivity(LoginActivity.this);
                 LoginActivity.this.finish();
             } else {
                 mViewModel.getLoginPage().observe(this, loginPage -> {

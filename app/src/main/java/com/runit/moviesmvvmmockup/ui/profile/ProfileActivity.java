@@ -1,33 +1,43 @@
 package com.runit.moviesmvvmmockup.ui.profile;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.runit.moviesmvvmmockup.R;
+import com.runit.moviesmvvmmockup.databinding.ActivityProfileBinding;
+import com.runit.moviesmvvmmockup.ui.profile.login.LoginActivity;
+import com.runit.moviesmvvmmockup.ui.profile.login.LoginViewModel;
 
 public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setTitle(getString(R.string.profile));
         setContentView(R.layout.activity_profile);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        ViewModelProviders.of(this).get(LoginViewModel.class).isUserLoggedIn().observe(this, (isLoggedIn) -> {
+            if (isLoggedIn != null && isLoggedIn) {
+                // Continue with loading
+                init();
+            } else {
+                LoginActivity.startActivity(ProfileActivity.this);
             }
         });
+    }
+
+    private void init() {
+        ProfileViewModel profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+        ActivityProfileBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
+        binding.setProfileViewModel(profileViewModel);
+        profileViewModel.getProfile(ProfileActivity.this);
     }
 
     public static void startActivity(Context c) {

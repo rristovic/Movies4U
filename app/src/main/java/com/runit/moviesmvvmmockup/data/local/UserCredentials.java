@@ -1,17 +1,17 @@
-package com.runit.moviesmvvmmockup.data.model;
+package com.runit.moviesmvvmmockup.data.local;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.runit.moviesmvvmmockup.data.model.Session;
+import com.runit.moviesmvvmmockup.data.model.Token;
+
 
 /**
- * Created by Radovan Ristovic on 3/30/2018.
- * Quantox.com
- * radovanr995@gmail.com
+ * Locally stored user credentials. Saves {@link Session} and {@link Token} models onto the disk.
  */
-
 public class UserCredentials {
 
     // Current instance
@@ -59,6 +59,7 @@ public class UserCredentials {
 
     /**
      * Set current user token that is used for retrieving sessionID.
+     *
      * @param token new token to be used for future calls.
      */
     public void setToken(Token token) {
@@ -68,6 +69,7 @@ public class UserCredentials {
 
     /**
      * Set current user session ID that is used for authorizing network calls.
+     *
      * @param sessionId new session ID to be used for future calls.
      */
     public void setSessionId(Session sessionId) {
@@ -77,10 +79,11 @@ public class UserCredentials {
 
     /**
      * Retrieves session ID object that is used in protected network calls to authorize the request.
+     *
      * @return {@link Session} object ready for future network calls, null if there is no session saved.
      */
     public Session getSessionId() {
-        if(mSessionId != null) {
+        if (mSessionId != null) {
             return mSessionId;
         }
         String result = getPreferences().getString(KEY_SESSION, "");

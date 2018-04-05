@@ -212,12 +212,12 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/vg_homepage"
                     style="@style/Layout_InfoSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:background="?attr/selectableItemBackground"
-                    android:onClick="@{movieDetailsViewModel::onHomepageClicked}"
                     android:visibility="@{movie.homepage != null ? View.VISIBLE : View.GONE}">
 
                     <TextView

@@ -1,13 +1,17 @@
-package com.runit.moviesmvvmmockup.data.remote;
+package com.runit.moviesmvvmmockup.data.remote.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
 import com.runit.moviesmvvmmockup.data.MoviesRepository;
+import com.runit.moviesmvvmmockup.data.exception.ErrorBundle;
+import com.runit.moviesmvvmmockup.data.model.Result;
 import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
 import com.runit.moviesmvvmmockup.data.model.MovieModel;
 import com.runit.moviesmvvmmockup.data.model.ServerResponse;
+import com.runit.moviesmvvmmockup.data.remote.RetrofitClient;
+import com.runit.moviesmvvmmockup.data.remote.TMDBApi;
 import com.runit.moviesmvvmmockup.utils.exception.RepositoryException;
 
 import java.util.List;
@@ -16,39 +20,33 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/*
-  Created by Radovan Ristovic on 4/4/2018.
-  Quantox.com
-  radovanr995@gmail.com
- */
-
 
 /**
  * {@link MoviesRepository} implementation which returns data from the {@link TMDBApi} network api.
  */
 public class MoviesRemoteRepository implements MoviesRepository {
-    private static MoviesRemoteRepository mInstance = new MoviesRemoteRepository();
+    private static final MoviesRemoteRepository mInstance = new MoviesRemoteRepository();
 
     public static MoviesRemoteRepository getInstance() {
         return mInstance;
     }
 
     @Override
-    public LiveData<MovieModel> getMovie(long movieId) {
-        final MutableLiveData<MovieModel> movie = new MutableLiveData<>();
+    public LiveData<Result<MovieModel>> getMovie(long movieId) {
+        final MutableLiveData<Result<MovieModel>> movie = new MutableLiveData<>();
         RetrofitClient.getClient().getMovieDetails(movieId).enqueue(new Callback<MovieModel>() {
             @Override
             public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    movie.setValue(response.body());
+                    movie.setValue(new Result<>(response.body()));
                 } else {
-                    movie.setValue(null);
+                    movie.setValue(new Result<>(ErrorBundle.defaultServerError()));
                 }
             }
 
             @Override
             public void onFailure(Call<MovieModel> call, Throwable t) {
-                movie.setValue(null);
+                movie.setValue(new Result<>(ErrorBundle.defaultConnectionError()));
             }
         });
         return movie;
@@ -56,8 +54,8 @@ public class MoviesRemoteRepository implements MoviesRepository {
 
 
     @Override
-    public LiveData<List<MovieModel>> getMovieList(MovieListCategory category, int page) {
-        LiveData<List<MovieModel>> movies;
+    public LiveData<Result<List<MovieModel>>> getMovieList(MovieListCategory category, int page) {
+        LiveData<Result<List<MovieModel>>> movies;
         switch (category) {
             case POPULAR: {
                 movies = fetchPopular(page);
@@ -89,8 +87,8 @@ public class MoviesRemoteRepository implements MoviesRepository {
      * @param page desired page of the list.
      * @return {@link LiveData} observable.
      */
-    private LiveData<List<MovieModel>> fetchNowPlaying(int page) {
-        final MutableLiveData<List<MovieModel>> movies = new MutableLiveData<>();
+    private LiveData<Result<List<MovieModel>>> fetchNowPlaying(int page) {
+        final MutableLiveData<Result<List<MovieModel>>> movies = new MutableLiveData<>();
         RetrofitClient.getClient().getNowPlayingMovies(page).enqueue(new Callback<ServerResponse<MovieModel>>() {
             @Override
             public void onResponse(Call<ServerResponse<MovieModel>> call, Response<ServerResponse<MovieModel>> response) {
@@ -103,7 +101,7 @@ public class MoviesRemoteRepository implements MoviesRepository {
 
             @Override
             public void onFailure(Call<ServerResponse<MovieModel>> call, Throwable t) {
-                onResponseFailure(movies);
+                onConnectionFailure(movies);
             }
         });
         return movies;
@@ -115,8 +113,8 @@ public class MoviesRemoteRepository implements MoviesRepository {
      * @param page desired page of the list.
      * @return {@link LiveData} observable.
      */
-    private LiveData<List<MovieModel>> fetchTopRated(int page) {
-        final MutableLiveData<List<MovieModel>> movies = new MutableLiveData<>();
+    private LiveData<Result<List<MovieModel>>> fetchTopRated(int page) {
+        final MutableLiveData<Result<List<MovieModel>>> movies = new MutableLiveData<>();
         RetrofitClient.getClient().getTopRated(page).enqueue(new Callback<ServerResponse<MovieModel>>() {
             @Override
             public void onResponse(Call<ServerResponse<MovieModel>> call, Response<ServerResponse<MovieModel>> response) {
@@ -129,7 +127,7 @@ public class MoviesRemoteRepository implements MoviesRepository {
 
             @Override
             public void onFailure(Call<ServerResponse<MovieModel>> call, Throwable t) {
-                onResponseFailure(movies);
+                onConnectionFailure(movies);
             }
         });
         return movies;
@@ -141,8 +139,8 @@ public class MoviesRemoteRepository implements MoviesRepository {
      * @param page desired page of the list.
      * @return {@link LiveData} observable.
      */
-    private LiveData<List<MovieModel>> fetchUpcoming(int page) {
-        final MutableLiveData<List<MovieModel>> movies = new MutableLiveData<>();
+    private LiveData<Result<List<MovieModel>>> fetchUpcoming(int page) {
+        final MutableLiveData<Result<List<MovieModel>>> movies = new MutableLiveData<>();
         RetrofitClient.getClient().getUpcoming(page).enqueue(new Callback<ServerResponse<MovieModel>>() {
             @Override
             public void onResponse(Call<ServerResponse<MovieModel>> call, Response<ServerResponse<MovieModel>> response) {
@@ -155,7 +153,7 @@ public class MoviesRemoteRepository implements MoviesRepository {
 
             @Override
             public void onFailure(Call<ServerResponse<MovieModel>> call, Throwable t) {
-                onResponseFailure(movies);
+                onConnectionFailure(movies);
             }
         });
         return movies;
@@ -167,8 +165,8 @@ public class MoviesRemoteRepository implements MoviesRepository {
      * @param page desired page of the list.
      * @return {@link LiveData} observable.
      */
-    private LiveData<List<MovieModel>> fetchPopular(int page) {
-        final MutableLiveData<List<MovieModel>> movies = new MutableLiveData<>();
+    private LiveData<Result<List<MovieModel>>> fetchPopular(int page) {
+        final MutableLiveData<Result<List<MovieModel>>> movies = new MutableLiveData<>();
         RetrofitClient.getClient().getPopularMovies(page).enqueue(new Callback<ServerResponse<MovieModel>>() {
             @Override
             public void onResponse(Call<ServerResponse<MovieModel>> call, Response<ServerResponse<MovieModel>> response) {
@@ -181,7 +179,7 @@ public class MoviesRemoteRepository implements MoviesRepository {
 
             @Override
             public void onFailure(Call<ServerResponse<MovieModel>> call, Throwable t) {
-                onResponseFailure(movies);
+                onConnectionFailure(movies);
             }
         });
         return movies;
@@ -193,8 +191,8 @@ public class MoviesRemoteRepository implements MoviesRepository {
      * @param observable LiveData observable on which to post new data.
      * @param movieList  Newly downloaded list of movies.
      */
-    private void onResponseSuccess(MutableLiveData<List<MovieModel>> observable, @NonNull List<MovieModel> movieList) {
-        observable.setValue(movieList);
+    private void onResponseSuccess(MutableLiveData<Result<List<MovieModel>>> observable, @NonNull List<MovieModel> movieList) {
+        observable.setValue(new Result<>(movieList));
     }
 
     /**
@@ -202,7 +200,16 @@ public class MoviesRemoteRepository implements MoviesRepository {
      *
      * @param observable LiveData observable on which to post an error.
      */
-    private void onResponseFailure(MutableLiveData<List<MovieModel>> observable) {
-        observable.setValue(null);
+    private void onResponseFailure(MutableLiveData<Result<List<MovieModel>>> observable) {
+        observable.setValue(new Result<>(ErrorBundle.defaultConnectionError()));
+    }
+
+    /**
+     * Method to call when failed to establish connection to the server.
+     *
+     * @param observable LiveData observable on which to post an error.
+     */
+    private void onConnectionFailure(MutableLiveData<Result<List<MovieModel>>> observable) {
+        observable.setValue(new Result<>(ErrorBundle.defaultConnectionError()));
     }
 }
