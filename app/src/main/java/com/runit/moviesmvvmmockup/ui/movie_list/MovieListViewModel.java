@@ -30,6 +30,8 @@ public class MovieListViewModel extends ViewModel {
     private int mCurrentPage;
     // Repository instance
     private MoviesRepository mRepository;
+    // last page total item count
+    private int mLastPageItemCount;
 
     public MovieListViewModel() {
         mRepository = RepositoryProvider.getMoviesRepository();
@@ -60,12 +62,16 @@ public class MovieListViewModel extends ViewModel {
         mMovies.addSource(source, movies -> {
             // Stop watching the list after data is loaded
             mMovies.removeSource(source);
+            if (movies.isSuccess()) {
+                mLastPageItemCount = movies.get().size();
+            }
             if (mMovies.getValue() != null && movies.isSuccess()) {
                 // Append to the current list
                 List<MovieModel> currentData = mMovies.getValue().get();
                 currentData.addAll(movies.get());
                 mMovies.setValue(new Result<>(currentData));
             } else {
+                // Set new list value or error
                 mMovies.setValue(movies);
             }
 
@@ -73,6 +79,15 @@ public class MovieListViewModel extends ViewModel {
                 isInitialLoading.set(false);
             }
         });
+    }
+
+    /**
+     * Retrieves total number of items retried for the last page.
+     *
+     * @return last page item count.
+     */
+    int getLastPageItemCount() {
+        return this.mLastPageItemCount;
     }
 
     /**

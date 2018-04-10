@@ -9,12 +9,6 @@ import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.ui.login.LoginActivity;
 
 /**
- * Created by Radovan Ristovic on 3/29/2018.
- * Quantox.com
- * radovanr995@gmail.com
- */
-
-/**
  * UI Utils class for showing dialogs and toasts.
  */
 public class UIUtil {

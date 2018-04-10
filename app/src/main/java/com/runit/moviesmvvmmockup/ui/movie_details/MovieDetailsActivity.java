@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String KEY_ID = "movie_id";
     private static final String KEY_NAME = "movie_name";
-    private static final String KEY_THUMBNAIL = "movie_thumnail_url";
+    private static final String KEY_THUMBNAIL = "movie_thumbnail_url";
     private MovieDetailsViewModel mViewModel;
 
     @Override

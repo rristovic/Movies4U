@@ -28,6 +28,7 @@ public class MovieListFragment extends Fragment {
     private static final String ARG_FRAG_CATEGORY = "fragment_cateogry";
     // Movie list adapter
     private MovieListAdapter mAdapter;
+    private MovieListViewModel mViewModel;
 
     public static MovieListFragment newInstance(MovieListCategory category) {
         MovieListFragment f = new MovieListFragment();
@@ -42,23 +43,24 @@ public class MovieListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Setup binding & viewModel
         FragmentMovieListBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_list, container, false);
-        MovieListViewModel viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
-        binding.setMovieListVM(viewModel);
+        mViewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
+        binding.setMovieListVM(mViewModel);
         // Setup list
         mAdapter = new MovieListAdapter(binding.rvMovies, new GridLayoutManager(getActivity(), 2), (parent, view, position, id) -> {
             MovieModel movieModel = mAdapter.getItem(position);
             MovieDetailsActivity.startActivity(getActivity(), movieModel.getId(), movieModel.getTitle(), movieModel.getThumbnailUrl());
         });
-        mAdapter.setOnLoadMoreListener(viewModel::getNextPage);
+        mAdapter.setOnLoadMoreListener(mViewModel::getNextPage);
         binding.rvMovies.setAdapter(mAdapter);
-        viewModel.getMoviesForCategory((MovieListCategory) getArguments().getSerializable(ARG_FRAG_CATEGORY))
+        mViewModel.getMoviesForCategory((MovieListCategory) getArguments().getSerializable(ARG_FRAG_CATEGORY))
                 .observe(this, movieResults -> {
                     if (movieResults.isSuccess()) {
                         if (movieResults.get().size() == 0) {
                             // If loading zero items, it means no more items to load
                             mAdapter.onLoadMoreComplete();
                         }
-                        mAdapter.addData(movieResults.get());
+                        // get only last page data
+                        mAdapter.addData(movieResults.get().subList(movieResults.get().size() - mViewModel.getLastPageItemCount(), movieResults.get().size()));
                     } else {
                         UIUtil.showShortToast(getActivity(), movieResults.error().getMessage());
                     }
