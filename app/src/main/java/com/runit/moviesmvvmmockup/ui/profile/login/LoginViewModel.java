@@ -48,6 +48,7 @@ public class LoginViewModel extends AndroidViewModel {
                 @Override
                 public void onResponse(Call<Account> call, Response<Account> response) {
                     if (response.isSuccessful()) {
+                        mUserCredentials.setAccount(response.body());
                         isLoggedIn.setValue(true);
                     } else {
                         isLoggedIn.setValue(false);

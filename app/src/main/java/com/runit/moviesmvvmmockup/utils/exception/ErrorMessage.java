@@ -1,4 +1,4 @@
-package com.runit.moviesmvvmmockup.utils;
+package com.runit.moviesmvvmmockup.utils.exception;
 
 
 /**

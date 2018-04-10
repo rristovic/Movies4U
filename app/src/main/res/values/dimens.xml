@@ -10,4 +10,5 @@
     <dimen name="movie_item_height">350dp</dimen>
     <dimen name="movie_item_img_max_size">300dp</dimen>
     <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="divider">1dp</dimen>
 </resources>

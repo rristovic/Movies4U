@@ -17,6 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.WebView;
 
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.data.model.MovieListCategory;

@@ -29,4 +29,8 @@
         <item>@string/popular</item>
     </string-array>
     <string name="title_activity_profile">ProfileActivity</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="rate">Rate</string>
+    <string name="please_login_msg">Please login in order to continue.</string>
+    <string name="login_to_use_feature_msg">In order to use this feature, please login.</string>
 </resources>

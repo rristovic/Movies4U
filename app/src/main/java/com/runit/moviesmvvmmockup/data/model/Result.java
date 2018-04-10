@@ -1,9 +1,8 @@
 package com.runit.moviesmvvmmockup.data.model;
 
 
-import android.support.annotation.Nullable;
-
 import com.runit.moviesmvvmmockup.data.exception.ErrorBundle;
+import com.runit.moviesmvvmmockup.utils.exception.ErrorMessage;
 
 /**
  * Class used for wrapping the model for transferring it between layers, or {@link ErrorBundle} object if there has been an error while retrieving the model.
@@ -16,7 +15,7 @@ public class Result<T> {
     private ErrorBundle error;
 
     /**
-     * Constructor for successful response. If param is null, this wrapper will set to be unsuccessful with message {@link com.runit.moviesmvvmmockup.utils.ErrorMessage#DEFAULT_ERROR}.
+     * Constructor for successful response. If param is null, this wrapper will set to be unsuccessful with message {@link ErrorMessage#DEFAULT_ERROR}.
      *
      * @param data model to be wrapped.
      */

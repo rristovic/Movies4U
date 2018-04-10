@@ -37,6 +37,7 @@ public class MovieListViewModel extends ViewModel {
 
     /**
      * Method for retrieving movie list for selected movie category. Can be a category from {@link MovieListCategory} enum.
+     * If result is an empty list, it means that the current loaded page has no items.
      *
      * @param category desired category for move list.
      * @return LiveData observable emitting list of movies.
@@ -59,7 +60,14 @@ public class MovieListViewModel extends ViewModel {
         mMovies.addSource(source, movies -> {
             // Stop watching the list after data is loaded
             mMovies.removeSource(source);
-            mMovies.setValue(movies);
+            if (mMovies.getValue() != null && movies.isSuccess()) {
+                // Append to the current list
+                List<MovieModel> currentData = mMovies.getValue().get();
+                currentData.addAll(movies.get());
+                mMovies.setValue(new Result<>(currentData));
+            } else {
+                mMovies.setValue(movies);
+            }
 
             if (isInitialLoading.get()) {
                 isInitialLoading.set(false);

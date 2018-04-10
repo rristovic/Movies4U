@@ -37,7 +37,7 @@ public class MovieModel {
     private String homepage;
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private Long id;
     @SerializedName("imdb_id")
     @Expose
     private String imdbId;
@@ -61,7 +61,7 @@ public class MovieModel {
     private String releaseDate;
     @SerializedName("revenue")
     @Expose
-    private Integer revenue;
+    private Long revenue;
     @SerializedName("runtime")
     @Expose
     private Integer runtime;
@@ -84,7 +84,7 @@ public class MovieModel {
     @Expose
     private Integer voteCount;
 
-    public MovieModel(Boolean adult, String backdropPath, Object belongsToCollection, Integer budget, List<Genre> genres, String homepage, Integer id, String imdbId, String originalLanguage, String originalTitle, String overview, Double popularity, String posterPath, String releaseDate, Integer revenue, Integer runtime, String status, String tagline, String title, Boolean video, Double voteAverage, Integer voteCount) {
+    public MovieModel(Boolean adult, String backdropPath, Object belongsToCollection, Integer budget, List<Genre> genres, String homepage, Long id, String imdbId, String originalLanguage, String originalTitle, String overview, Double popularity, String posterPath, String releaseDate, Long revenue, Integer runtime, String status, String tagline, String title, Boolean video, Double voteAverage, Integer voteCount) {
         this.adult = adult;
         this.backdropPath = backdropPath;
         this.belongsToCollection = belongsToCollection;
@@ -148,7 +148,7 @@ public class MovieModel {
         return homepage;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -176,7 +176,7 @@ public class MovieModel {
         return releaseDate;
     }
 
-    public Integer getRevenue() {
+    public Long getRevenue() {
         return revenue;
     }
 

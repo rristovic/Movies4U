@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.runit.moviesmvvmmockup.data.model.Account;
 import com.runit.moviesmvvmmockup.data.model.Session;
 import com.runit.moviesmvvmmockup.data.model.Token;
 
@@ -23,11 +24,14 @@ public class UserCredentials {
     private Token mRequestToken;
     // Current user session
     private Session mSessionId;
+    // Current user account
+    private Account mAccount;
 
     // Shared preference keys
     private final String PREF_NAME = "user_credentials";
     private final String KEY_TOKEN = "user_request_token";
     private final String KEY_SESSION = "user_session_id";
+    private final String KEY_ACCOUNT = "user_account";
 
     public static UserCredentials getInstance(Context context) {
         if (mInstance == null) {
@@ -42,6 +46,29 @@ public class UserCredentials {
 
     private UserCredentials(Context context) {
         this.mContext = context;
+    }
+
+    /**
+     * Retrieves current user account.
+     *
+     * @return {@link Account} object, null if there is no account saved.
+     */
+    public Account getUserAccount() {
+        if (mAccount != null)
+            return mAccount;
+        String result = getPreferences().getString(KEY_ACCOUNT, "");
+        mAccount = result.equals("") ? null : new Gson().fromJson(result, Account.class);
+        return mAccount;
+    }
+
+    /**
+     * Set current user account.
+     *
+     * @param account new user account.
+     */
+    public void setAccount(Account account) {
+        this.mAccount = account;
+        getPreferences().edit().putString(KEY_ACCOUNT, new Gson().toJson(account)).apply();
     }
 
     /**

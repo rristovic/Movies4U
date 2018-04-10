@@ -43,13 +43,13 @@ public class MovieListAdapter extends AbsEndlessRecycleViewAdapter<MovieModel, M
     class MovieItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final MovieItemBinding binding;
 
-        public MovieItemViewHolder(MovieItemBinding binding) {
+        MovieItemViewHolder(MovieItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             this.binding.getRoot().setOnClickListener(this);
         }
 
-        public void bind(MovieModel movieModel) {
+        void bind(MovieModel movieModel) {
             this.binding.setMovie(movieModel);
             // Must be run to populate view with data immediately, so RecycleView can measure properly
             this.binding.executePendingBindings();

@@ -28,11 +28,13 @@
             android:name=".ui.profile.login.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.movie_details.MovieDetailsActivity" />
+        <activity
+            android:name=".ui.movie_details.MovieDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.profile.ProfileActivity" />
         <activity
             android:name=".ui.search.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

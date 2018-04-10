@@ -1,7 +1,7 @@
 package com.runit.moviesmvvmmockup.data.exception;
 
 
-import com.runit.moviesmvvmmockup.utils.ErrorMessage;
+import com.runit.moviesmvvmmockup.utils.exception.ErrorMessage;
 
 /**
  * Class for wrapping an exception.

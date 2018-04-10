@@ -29,7 +29,7 @@
 
     <style name="Text_SmallLabel">
         <item name="android:textColor">@color/text_hint_black</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:layout_marginRight">8dp</item>
     </style>
 

@@ -5,9 +5,13 @@ import com.runit.moviesmvvmmockup.data.model.MovieModel;
 import com.runit.moviesmvvmmockup.data.model.ServerResponse;
 import com.runit.moviesmvvmmockup.data.model.Session;
 import com.runit.moviesmvvmmockup.data.model.Token;
+import com.runit.moviesmvvmmockup.data.model.request.MovieBookmarkRequest;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -44,4 +48,10 @@ public interface TMDBApi {
 
     @GET("search/movie?include_adult=true")
     Call<ServerResponse<MovieModel>> search(@Query("query") String searchQuery, @Query("page") Integer page);
+
+    @GET("account/{account_id}/watchlist")
+    @Headers("Content-Type: application/json;charset=utf-8")
+    Call<ServerResponse<MovieModel>> bookmark(@Path("account_id") long account_id,
+                                              @Query("session_id") String sessionId,
+                                              @Body MovieBookmarkRequest requestBody);
 }
