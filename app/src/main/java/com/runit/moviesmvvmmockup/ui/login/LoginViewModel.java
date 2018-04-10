@@ -1,4 +1,4 @@
-package com.runit.moviesmvvmmockup.ui.profile.login;
+package com.runit.moviesmvvmmockup.ui.login;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
@@ -112,7 +112,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     /**
      * Helper method used for generating new user session that will be used to authorize protected API calls.
-     * Changes the status of logged in if retrieving a new session was a success.
+     * Changes the status of logged in if retrieving of a new session was a failure.
      */
     private void generateNewSession() {
         isLoading.set(true);
@@ -121,7 +121,7 @@ public class LoginViewModel extends AndroidViewModel {
             public void onResponse(Call<Session> call, Response<Session> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     mUserCredentials.setSessionId(response.body());
-                    isLoggedIn.setValue(true);
+                    getProfile();
                 } else {
                     isLoggedIn.setValue(false);
                 }
@@ -131,6 +131,29 @@ public class LoginViewModel extends AndroidViewModel {
             @Override
             public void onFailure(Call<Session> call, Throwable t) {
                 isLoading.set(false);
+                isLoggedIn.setValue(false);
+            }
+        });
+    }
+
+    /**
+     * Helper method for retrieving user profile and storing it in db.
+     * Changes the status of logged in if retrieving of a user profile was a success or failure.
+     */
+    private void getProfile() {
+        RetrofitClient.getClient().getAccount(UserCredentials.getInstance(getApplication()).getSessionId().session()).enqueue(new Callback<Account>() {
+            @Override
+            public void onResponse(Call<Account> call, Response<Account> response) {
+                if (response.isSuccessful()) {
+                    UserCredentials.getInstance(getApplication()).setAccount(response.body());
+                    isLoggedIn.setValue(true);
+                } else {
+                    isLoggedIn.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Account> call, Throwable t) {
                 isLoggedIn.setValue(false);
             }
         });

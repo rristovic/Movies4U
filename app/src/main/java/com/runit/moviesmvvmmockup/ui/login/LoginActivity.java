@@ -1,4 +1,4 @@
-package com.runit.moviesmvvmmockup.ui.profile.login;
+package com.runit.moviesmvvmmockup.ui.login;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -11,8 +11,6 @@ import android.webkit.WebViewClient;
 
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.databinding.ActivityLoginBinding;
-import com.runit.moviesmvvmmockup.ui.main.MainActivity;
-import com.runit.moviesmvvmmockup.ui.profile.ProfileActivity;
 import com.runit.moviesmvvmmockup.utils.UIUtil;
 
 public class  LoginActivity extends AppCompatActivity {

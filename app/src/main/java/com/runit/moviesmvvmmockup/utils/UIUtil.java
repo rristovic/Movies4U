@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.runit.moviesmvvmmockup.R;
-import com.runit.moviesmvvmmockup.ui.profile.login.LoginActivity;
+import com.runit.moviesmvvmmockup.ui.login.LoginActivity;
 
 /**
  * Created by Radovan Ristovic on 3/29/2018.

@@ -12,7 +12,6 @@ import android.view.MenuItem;
 
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.databinding.ActivityMovieDetailsBinding;
-import com.runit.moviesmvvmmockup.ui.profile.login.LoginViewModel;
 import com.runit.moviesmvvmmockup.utils.UIUtil;
 import com.squareup.picasso.Picasso;
 
@@ -40,6 +39,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         UIUtil.showToast(MovieDetailsActivity.this, movieModel.error().getMessage());
                     }
                 });
+        mViewModel.onToastMessage().observe(this, msg -> UIUtil.showShortToast(MovieDetailsActivity.this, msg));
         // init UI data
         Picasso picasso = new Picasso.Builder(this).build();
         picasso.load(getIntent().getStringExtra(KEY_THUMBNAIL)).into(binding.ivMovieThumbnail);
@@ -65,14 +65,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 break;
             }
             case R.id.action_bookmark: {
-                if (mViewModel != null) {
-                    onBookmarkClicked();
+                // For simplicity, implementing this login here instead of in ViewModel;
+                if (mViewModel != null && mViewModel.isAccountFeatureAvailable()) {
+
+                } else {
+                    // must login first
+                    UIUtil.showLoginDialog(MovieDetailsActivity.this, getString(R.string.login_to_use_feature_msg));
                 }
                 break;
             }
             case R.id.action_rate: {
-                if (mViewModel != null) {
-                    onRateMovieClicked();
+                // For simplicity, implementing this login here instead of in ViewModel;
+                if (mViewModel != null && mViewModel.isAccountFeatureAvailable()) {
+
+                } else {
+                    // must login first
+                    UIUtil.showLoginDialog(MovieDetailsActivity.this, getString(R.string.login_to_use_feature_msg));
                 }
                 break;
             }
@@ -80,26 +88,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void onBookmarkClicked() {
-        ViewModelProviders.of(this).get(LoginViewModel.class).isUserLoggedIn().observe(this, isLoggedIn -> {
-            if (isLoggedIn != null && isLoggedIn) {
-                mViewModel.onBookmarkClicked(getApplicationContext());
-            } else {
-                UIUtil.showLoginDialog(MovieDetailsActivity.this, getString(R.string.login_to_use_feature_msg));
-            }
-        });
-    }
-
-    private void onRateMovieClicked() {
-        ViewModelProviders.of(this).get(LoginViewModel.class).isUserLoggedIn().observe(this, isLoggedIn -> {
-            if (isLoggedIn != null && isLoggedIn) {
-                mViewModel.rateMovie(getApplicationContext(),0);
-            } else {
-                UIUtil.showLoginDialog(MovieDetailsActivity.this, getString(R.string.login_to_use_feature_msg));
-            }
-        });
     }
 
 

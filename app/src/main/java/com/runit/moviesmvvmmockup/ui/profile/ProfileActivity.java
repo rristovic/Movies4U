@@ -5,15 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.databinding.ActivityProfileBinding;
-import com.runit.moviesmvvmmockup.ui.profile.login.LoginActivity;
-import com.runit.moviesmvvmmockup.ui.profile.login.LoginViewModel;
+import com.runit.moviesmvvmmockup.ui.login.LoginActivity;
+import com.runit.moviesmvvmmockup.ui.login.LoginViewModel;
 
 public class ProfileActivity extends AppCompatActivity {
 

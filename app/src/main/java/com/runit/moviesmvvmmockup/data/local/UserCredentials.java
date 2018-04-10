@@ -136,4 +136,13 @@ public class UserCredentials {
     private SharedPreferences getPreferences() {
         return mContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
+
+    /**
+     * Checks if user credentials are currently present in order to send authorized network requests.
+     *
+     * @return true is credentials are present.
+     */
+    public boolean isLoggedIn() {
+        return this.getSessionId() != null && this.getUserAccount() != null;
+    }
 }
