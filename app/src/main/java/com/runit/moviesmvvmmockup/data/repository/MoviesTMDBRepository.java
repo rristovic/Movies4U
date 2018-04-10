@@ -1,11 +1,13 @@
-package com.runit.moviesmvvmmockup.data.remote.repository;
+package com.runit.moviesmvvmmockup.data.repository;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
 import com.runit.moviesmvvmmockup.data.MoviesRepository;
 import com.runit.moviesmvvmmockup.data.exception.ErrorBundle;
+import com.runit.moviesmvvmmockup.data.local.UserCredentials;
 import com.runit.moviesmvvmmockup.data.model.Result;
 import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
 import com.runit.moviesmvvmmockup.data.model.MovieModel;
@@ -24,11 +26,22 @@ import retrofit2.Response;
 /**
  * {@link MoviesRepository} implementation which returns data from the {@link TMDBApi} network api.
  */
-public class MoviesRemoteRepository implements MoviesRepository {
-    private static final MoviesRemoteRepository mInstance = new MoviesRemoteRepository();
+public class MoviesTMDBRepository implements MoviesRepository {
+    private static final MoviesTMDBRepository mInstance = new MoviesTMDBRepository();
 
-    public static MoviesRemoteRepository getInstance() {
+    public static MoviesTMDBRepository getInstance() {
         return mInstance;
+    }
+
+    @Override
+    public LiveData<Result<List<MovieModel>>> getBookmarkedMovies(long userId) {
+        return null;
+    }
+
+    @Override
+    public LiveData<Boolean> isMovieBookmarked(long movieId, UserCredentials credentials) {
+        MediatorLiveData<Boolean> result = new MediatorLiveData<>();
+        return result;
     }
 
     @Override
@@ -211,5 +224,11 @@ public class MoviesRemoteRepository implements MoviesRepository {
      */
     private void onConnectionFailure(MutableLiveData<Result<List<MovieModel>>> observable) {
         observable.setValue(new Result<>(ErrorBundle.defaultConnectionError()));
+    }
+
+    private LiveData<Boolean> fetchIsMovieBookmarked(long movieId, UserCredentials credentials) {
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+        RetrofitClient
+        return result;
     }
 }

@@ -54,4 +54,11 @@ public interface TMDBApi {
     Call<ServerResponse<MovieModel>> bookmark(@Path("account_id") long account_id,
                                               @Query("session_id") String sessionId,
                                               @Body MovieBookmarkRequest requestBody);
+
+    @GET("movie/{movie_id}/account_states")
+    @Headers("Content-Type: application/json;charset=utf-8")
+    Call<ServerResponse<MovieModel>> isMovieBookmarked(@Path("movie_id") long movieId,
+                                                       @Query("account_id") long account_id,
+                                              @Query("session_id") String sessionId,
+                                              @Body MovieBookmarkRequest requestBody);
 }

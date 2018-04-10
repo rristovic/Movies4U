@@ -59,8 +59,13 @@ public class MovieListFragment extends Fragment {
                             // If loading zero items, it means no more items to load
                             mAdapter.onLoadMoreComplete();
                         }
-                        // get only last page data
-                        mAdapter.addData(movieResults.get().subList(movieResults.get().size() - mViewModel.getLastPageItemCount(), movieResults.get().size()));
+                        if (mAdapter.getItemCount() > 0) {
+                            // get only last page data
+                            mAdapter.addData(movieResults.get().subList(movieResults.get().size() - mViewModel.getLastPageItemCount(), movieResults.get().size()));
+                        } else {
+                            // initial load
+                            mAdapter.addData(movieResults.get());
+                        }
                     } else {
                         UIUtil.showShortToast(getActivity(), movieResults.error().getMessage());
                     }

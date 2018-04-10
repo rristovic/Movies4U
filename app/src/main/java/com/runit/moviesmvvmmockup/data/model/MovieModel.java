@@ -1,21 +1,22 @@
 package com.runit.moviesmvvmmockup.data.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.runit.moviesmvvmmockup.ui.movie_details.MovieDetailsViewModel;
 
 import java.util.List;
 
-/**
- * Created by Radovan Ristovic on 3/30/2018.
- * Quantox.com
- * radovanr995@gmail.com
- */
+import static android.arch.persistence.room.ForeignKey.CASCADE;
 
+
+@Entity
 public class MovieModel {
     @SerializedName("adult")
     @Expose
@@ -25,18 +26,21 @@ public class MovieModel {
     private String backdropPath;
     @SerializedName("belongs_to_collection")
     @Expose
+    @Ignore
     private Object belongsToCollection;
     @SerializedName("budget")
     @Expose
     private Integer budget;
     @SerializedName("genres")
     @Expose
+    @Ignore
     private List<Genre> genres = null;
     @SerializedName("homepage")
     @Expose
     private String homepage;
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private Long id;
     @SerializedName("imdb_id")
     @Expose
@@ -108,6 +112,7 @@ public class MovieModel {
         this.voteAverage = voteAverage;
         this.voteCount = voteCount;
     }
+
 
     /**
      * Return the movie thumbnail url.
@@ -204,7 +209,12 @@ public class MovieModel {
     public String getDisplayTitle() {
         String title = this.title;
         if (this.releaseDate != null) {
-            title += " (" + this.releaseDate.substring(0, this.releaseDate.indexOf("-")) + ")";
+            try {
+                title += " (" + this.releaseDate.substring(0, this.releaseDate.indexOf("-")) + ")";
+            } catch (IndexOutOfBoundsException ex) {
+                ex.printStackTrace();
+                // ignore
+            }
         }
         return title;
     }

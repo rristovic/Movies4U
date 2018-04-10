@@ -1,6 +1,6 @@
 package com.runit.moviesmvvmmockup.data;
 
-import com.runit.moviesmvvmmockup.data.remote.repository.MoviesRemoteRepository;
+import com.runit.moviesmvvmmockup.data.repository.MoviesTMDBRepository;
 import com.runit.moviesmvvmmockup.data.remote.repository.SearchRemoteRepository;
 
 /**
@@ -13,7 +13,7 @@ public class RepositoryProvider {
      * @return repository object.
      */
     public static MoviesRepository getMoviesRepository() {
-        return MoviesRemoteRepository.getInstance();
+        return MoviesTMDBRepository.getInstance();
     }
 
     /**
