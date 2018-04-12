@@ -4,8 +4,10 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.Observer;
 import android.databinding.ObservableBoolean;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.runit.moviesmvvmmockup.data.MoviesRepository;
 import com.runit.moviesmvvmmockup.data.RepositoryProvider;
@@ -29,12 +31,14 @@ public class MovieDetailsViewModel extends AndroidViewModel {
     private SingleLiveEvent<String> mToastMessage;
     // Repo instance
     private MoviesRepository mRepository;
+    // Current movie id
+    private long mMovieId;
 
 
     public MovieDetailsViewModel(@NonNull Application application) {
         super(application);
         mToastMessage = new SingleLiveEvent<>();
-        mRepository = RepositoryProvider.getMoviesRepository();
+        mRepository = RepositoryProvider.getMoviesRepository(application);
     }
 
     /**
@@ -45,6 +49,7 @@ public class MovieDetailsViewModel extends AndroidViewModel {
      */
     public LiveData<Result<MovieModel>> getMovie(long id) {
         if (mMovie == null) {
+            this.mMovieId = id;
             mMovie = new MediatorLiveData<>();
             fetchMovie(id);
         }
@@ -83,5 +88,32 @@ public class MovieDetailsViewModel extends AndroidViewModel {
      */
     public boolean isAccountFeatureAvailable() {
         return UserCredentials.getInstance(getApplication()).isLoggedIn();
+    }
+
+    /**
+     * Method to call when bookmark icon has been pressed. Bookmarks current movie or removes it from bookmarks.
+     */
+    public void onBookmarkPressed() {
+        if (this.mMovie.getValue() != null && this.mMovie.getValue().isSuccess())
+            // Only bookmark if data is present
+            mRepository.bookmark(this.mMovie.getValue().get());
+    }
+
+    /**
+     * Checks if movie has been bookmarked.
+     * @return {@link LiveData} observable emitting true if movie has been bookmarked, false otherwise.
+     */
+    public LiveData<Boolean> isBookmarked() {
+        MediatorLiveData<Boolean> result = new MediatorLiveData<>();
+        LiveData<Result<Boolean>> source = mRepository.isMovieBookmarked(mMovieId);
+        result.addSource(source, booleanResult -> {
+            if (booleanResult != null && booleanResult.isSuccess() && booleanResult.get()) {
+                result.setValue(true);
+            } else {
+                result.setValue(false);
+            }
+        });
+
+        return result;
     }
 }

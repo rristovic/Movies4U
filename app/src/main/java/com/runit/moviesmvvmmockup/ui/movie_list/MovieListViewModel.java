@@ -1,9 +1,12 @@
 package com.runit.moviesmvvmmockup.ui.movie_list;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.databinding.ObservableBoolean;
+import android.support.annotation.NonNull;
 
 import com.runit.moviesmvvmmockup.data.MoviesRepository;
 import com.runit.moviesmvvmmockup.data.RepositoryProvider;
@@ -19,7 +22,7 @@ import java.util.List;
  * radovanr995@gmail.com
  */
 
-public class MovieListViewModel extends ViewModel {
+public class MovieListViewModel extends AndroidViewModel {
     // Flag indicating if initial loading of data is in progress
     public ObservableBoolean isInitialLoading = new ObservableBoolean(true);
     // Holds the current movie list data
@@ -33,8 +36,9 @@ public class MovieListViewModel extends ViewModel {
     // last page total item count
     private int mLastPageItemCount;
 
-    public MovieListViewModel() {
-        mRepository = RepositoryProvider.getMoviesRepository();
+    public MovieListViewModel(@NonNull Application application) {
+        super(application);
+        mRepository = RepositoryProvider.getMoviesRepository(application);
     }
 
     /**

@@ -2,7 +2,6 @@ package com.runit.moviesmvvmmockup.data.local.db;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.util.Log;
 
 
 /**
@@ -30,4 +29,7 @@ public class DBProvider {
                 .allowMainThreadQueries().build();
     }
 
+    public MovieDatabase getDatabaseInstance() {
+        return mDb;
+    }
 }

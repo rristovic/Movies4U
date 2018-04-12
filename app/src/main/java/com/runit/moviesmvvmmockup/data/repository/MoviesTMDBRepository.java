@@ -3,17 +3,24 @@ package com.runit.moviesmvvmmockup.data.repository;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.runit.moviesmvvmmockup.data.MoviesRepository;
 import com.runit.moviesmvvmmockup.data.exception.ErrorBundle;
+import com.runit.moviesmvvmmockup.data.local.BookmarkedMovie;
 import com.runit.moviesmvvmmockup.data.local.UserCredentials;
-import com.runit.moviesmvvmmockup.data.model.Result;
+import com.runit.moviesmvvmmockup.data.local.dao.MovieDao;
+import com.runit.moviesmvvmmockup.data.local.db.DBProvider;
+import com.runit.moviesmvvmmockup.data.local.db.MovieDatabase;
+import com.runit.moviesmvvmmockup.data.model.MovieAccountState;
 import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
 import com.runit.moviesmvvmmockup.data.model.MovieModel;
+import com.runit.moviesmvvmmockup.data.model.Result;
 import com.runit.moviesmvvmmockup.data.model.ServerResponse;
 import com.runit.moviesmvvmmockup.data.remote.RetrofitClient;
 import com.runit.moviesmvvmmockup.data.remote.TMDBApi;
+import com.runit.moviesmvvmmockup.utils.JobExecutor;
 import com.runit.moviesmvvmmockup.utils.exception.RepositoryException;
 
 import java.util.List;
@@ -27,21 +34,98 @@ import retrofit2.Response;
  * {@link MoviesRepository} implementation which returns data from the {@link TMDBApi} network api.
  */
 public class MoviesTMDBRepository implements MoviesRepository {
-    private static final MoviesTMDBRepository mInstance = new MoviesTMDBRepository();
+    private static MoviesTMDBRepository mInstance;
+    // DB instance
+    private MovieDatabase mDatabase;
+    // Application context
+    private static Context mContext;
 
-    public static MoviesTMDBRepository getInstance() {
+    public static MoviesTMDBRepository getInstance(Context context) {
+        if (mInstance == null) {
+            synchronized (DBProvider.class) {
+                if (mInstance == null) {
+                    mInstance = new MoviesTMDBRepository(context);
+                }
+            }
+        }
         return mInstance;
+    }
+
+    private MoviesTMDBRepository(Context context) {
+        mContext = context.getApplicationContext();
+        mDatabase = DBProvider.getInstance(context).getDatabaseInstance();
     }
 
     @Override
     public LiveData<Result<List<MovieModel>>> getBookmarkedMovies(long userId) {
-        return null;
+        MediatorLiveData<Result<List<MovieModel>>> result = new MediatorLiveData<>();
+        LiveData<List<Long>> source = mDatabase.movieDao().getAllMovieIdsForUser(userId);
+        result.addSource(source, bookmarkedMovies -> {
+            result.removeSource(source);
+            if (bookmarkedMovies != null) {
+                // Query all movies by its ID
+                LiveData<List<MovieModel>> moviesSource = mDatabase.movieDao().getMovies(bookmarkedMovies);
+                result.addSource(moviesSource, movieModels -> {
+                    result.removeSource(moviesSource);
+                    if (movieModels != null) {
+                        result.setValue(new Result<>(movieModels));
+                    } else {
+                        result.setValue(new Result<>(ErrorBundle.defaultError()));
+                    }
+                });
+            } else {
+                result.setValue(new Result<>(ErrorBundle.defaultError()));
+            }
+        });
+        return result;
     }
 
     @Override
-    public LiveData<Boolean> isMovieBookmarked(long movieId, UserCredentials credentials) {
-        MediatorLiveData<Boolean> result = new MediatorLiveData<>();
+    public LiveData<Result<Boolean>> isMovieBookmarked(long movieId) {
+        MediatorLiveData<Result<Boolean>> result = new MediatorLiveData<>();
+        UserCredentials credentials = UserCredentials.getInstance(mContext);
+        if (credentials.getUserAccount() != null) {
+            LiveData<Long> source = mDatabase.movieDao().isMovieBookmarked(movieId, credentials.getUserAccount().getId());
+            result.addSource(source, movie -> {
+                if (movie != null) {
+                    result.setValue(new Result<>(Boolean.TRUE));
+                } else {
+                    result.setValue(new Result<>(Boolean.FALSE));
+                }
+            });
+        } else {
+            result.setValue(new Result<>(Boolean.FALSE));
+        }
         return result;
+    }
+
+    @Override
+    public void bookmark(MovieModel movie) {
+        MovieDao movieDao = mDatabase.movieDao();
+        UserCredentials credentials = UserCredentials.getInstance(mContext);
+        if (credentials.getUserAccount() != null) {
+            JobExecutor.execute( () -> {
+                MovieDao dao = mDatabase.movieDao();
+                if(dao.isMovieBookmarkedAsync(movie.getId(), credentials.getUserAccount().getId()) != null){
+                    this.removeFromBookmark(movie);
+                } else {
+                    movieDao.insert(movie, credentials.getUserAccount().getId());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void removeFromBookmark(MovieModel movie) {
+        UserCredentials credentials = UserCredentials.getInstance(mContext);
+        if (credentials.getUserAccount() != null) {
+            mDatabase.movieDao().delete(new BookmarkedMovie(movie.getId(), credentials.getUserAccount().getId()));
+            List<Long> users = mDatabase.movieDao().getAllUserIdsForMovieIdAsync(movie.getId());
+            if (users == null || users.size() == 0) {
+                // If no user has this movie bookmarked, delete it from DB.
+                mDatabase.movieDao().delete(movie);
+            }
+        }
     }
 
     @Override
@@ -226,9 +310,4 @@ public class MoviesTMDBRepository implements MoviesRepository {
         observable.setValue(new Result<>(ErrorBundle.defaultConnectionError()));
     }
 
-    private LiveData<Boolean> fetchIsMovieBookmarked(long movieId, UserCredentials credentials) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
-        RetrofitClient
-        return result;
-    }
 }

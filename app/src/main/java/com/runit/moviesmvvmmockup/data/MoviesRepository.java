@@ -40,8 +40,19 @@ public interface MoviesRepository {
     /**
      * Method for checking if a movie is bookmarked by a user.
      * @param movieId id of the movie.
-     * @param credentials {@link UserCredentials} object that holds userId and params to authorize with the API.
      * @return {@link LiveData} observable to subscribe to, emitting true if movie has been bookmarked.
      */
-    LiveData<Boolean> isMovieBookmarked(long movieId, UserCredentials credentials);
+    LiveData<Result<Boolean>> isMovieBookmarked(long movieId);
+
+    /**
+     * Method for bookmarking a movie.
+     * @param movieModel {@link MovieModel} to be bookmarked.
+     */
+    void bookmark(MovieModel movieModel);
+
+    /**
+     * Method for removing movie from bookmark.
+     * @param movieModel {@link MovieModel} to be removed.
+     */
+    void removeFromBookmark(MovieModel movieModel);
 }

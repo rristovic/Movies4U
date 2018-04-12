@@ -21,7 +21,7 @@ public class Result<T> {
      */
     public Result(T data) {
         if (data == null) {
-            error = ErrorBundle.defaulError();
+            error = ErrorBundle.defaultError();
         }
         this.model = data;
     }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.databinding.ActivityMovieDetailsBinding;
@@ -20,6 +21,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private static final String KEY_NAME = "movie_name";
     private static final String KEY_THUMBNAIL = "movie_thumbnail_url";
     private MovieDetailsViewModel mViewModel;
+    private MenuItem mBookmarkMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_movie_details, menu);
+        mBookmarkMenuItem = menu.findItem(R.id.action_bookmark);
+        if (mViewModel != null) {
+            mViewModel.isBookmarked().observe(this, isBookmarked -> {
+                if (isBookmarked != null && isBookmarked) {
+                    mBookmarkMenuItem.setIcon(getResources().getDrawable(R.drawable.bookmark_filled));
+                } else {
+                    mBookmarkMenuItem.setIcon(getResources().getDrawable(R.drawable.bookmark));
+                }
+            });
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -65,9 +77,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 break;
             }
             case R.id.action_bookmark: {
-                // For simplicity, implementing this login here instead of in ViewModel;
+                // For simplicity, implementing here instead of in ViewModel;
                 if (mViewModel != null && mViewModel.isAccountFeatureAvailable()) {
-
+                    mViewModel.onBookmarkPressed();
                 } else {
                     // must login first
                     UIUtil.showLoginDialog(MovieDetailsActivity.this, getString(R.string.login_to_use_feature_msg));
@@ -75,7 +87,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 break;
             }
             case R.id.action_rate: {
-                // For simplicity, implementing this login here instead of in ViewModel;
+                // For simplicity, implementing here instead of in ViewModel;
                 if (mViewModel != null && mViewModel.isAccountFeatureAvailable()) {
 
                 } else {

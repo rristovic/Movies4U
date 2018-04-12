@@ -27,7 +27,7 @@ public class ErrorBundle {
     }
 
     /**
-     * Created default server error with message {@link ErrorMessage#CONNECTION_ERROR} and {@link RuntimeException}.
+     * Creates default server connection error with message {@link ErrorMessage#CONNECTION_ERROR} and {@link RuntimeException}.
      *
      * @return newly created ErrorBundle object.
      */
@@ -36,11 +36,20 @@ public class ErrorBundle {
     }
 
     /**
-     * Created default server error with message {@link ErrorMessage#DEFAULT_ERROR} and {@link RuntimeException}.
+     * Creates default error with message {@link ErrorMessage#DEFAULT_ERROR} and {@link RuntimeException}.
      *
      * @return newly created ErrorBundle object.
      */
-    public static ErrorBundle defaulError() {
+    public static ErrorBundle defaultError() {
         return new ErrorBundle(new RuntimeException(ErrorMessage.DEFAULT_ERROR));
+    }
+
+    /**
+     * Creates default not logged in error with message {@link ErrorMessage#NOT_LOGGED_IN} and {@link RuntimeException}.
+     *
+     * @return newly created ErrorBundle object.
+     */
+    public static ErrorBundle defaulNotLoggedInError() {
+        return new ErrorBundle(new RuntimeException(ErrorMessage.NOT_LOGGED_IN));
     }
 }

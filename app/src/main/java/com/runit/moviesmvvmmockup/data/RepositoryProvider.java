@@ -1,5 +1,7 @@
 package com.runit.moviesmvvmmockup.data;
 
+import android.content.Context;
+
 import com.runit.moviesmvvmmockup.data.repository.MoviesTMDBRepository;
 import com.runit.moviesmvvmmockup.data.remote.repository.SearchRemoteRepository;
 
@@ -12,8 +14,8 @@ public class RepositoryProvider {
      * Retrieves {@link MoviesRepository} object for managing {@link com.runit.moviesmvvmmockup.data.model.MovieModel} objects.
      * @return repository object.
      */
-    public static MoviesRepository getMoviesRepository() {
-        return MoviesTMDBRepository.getInstance();
+    public static MoviesRepository getMoviesRepository(Context context) {
+        return MoviesTMDBRepository.getInstance(context);
     }
 
     /**
