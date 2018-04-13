@@ -18,6 +18,15 @@ public class ErrorBundle {
     }
 
     /**
+     * Return new object with {@link RuntimeException} as default exception with provided message object.
+     * @param msg string message to be set as error message.
+     * @return newly created object. 
+     */
+    public static ErrorBundle error(String msg) {
+        return new ErrorBundle(new RuntimeException(msg));
+    }
+
+    /**
      * Creates default server error with message {@link ErrorMessage#SERVER_ERROR} and {@link RuntimeException}.
      *
      * @return newly created ErrorBundle object.

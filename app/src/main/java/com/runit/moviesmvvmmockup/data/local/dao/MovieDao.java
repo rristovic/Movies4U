@@ -51,6 +51,9 @@ public abstract class MovieDao {
     @Query("SELECT * FROM MovieModel WHERE id IN (:movieIds)")
     public abstract LiveData<List<MovieModel>> getMovies(List<Long> movieIds);
 
+    @Query("SELECT * FROM MovieModel WHERE id=:movieId")
+    public abstract LiveData<MovieModel> getMovie(Long movieId);
+
     @Query("SELECT movieId FROM boomarked_movie WHERE movieId=:movieId AND userId=:userId")
     public abstract LiveData<Long> isMovieBookmarked(long movieId, long userId);
 

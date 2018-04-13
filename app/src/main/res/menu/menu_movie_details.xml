@@ -14,5 +14,5 @@
         android:id="@+id/action_rate"
         android:orderInCategory="100"
         android:title="@string/rate"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>

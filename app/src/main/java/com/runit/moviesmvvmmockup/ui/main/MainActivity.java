@@ -21,6 +21,7 @@ import android.view.View;
 
 import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
+import com.runit.moviesmvvmmockup.ui.bookmarks.BookmarksActivity;
 import com.runit.moviesmvvmmockup.ui.movie_list.MovieListFragment;
 import com.runit.moviesmvvmmockup.ui.profile.ProfileActivity;
 import com.runit.moviesmvvmmockup.ui.search.SearchActivity;
@@ -71,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         case R.id.nav_my_profile: {
                             ProfileActivity.startActivity(MainActivity.this);
+                        }
+                        case R.id.nav_bookmarks: {
+                            BookmarksActivity.startActivity(MainActivity.this);
                         }
                     }
                     return true;

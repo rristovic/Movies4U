@@ -11,4 +11,5 @@
     <dimen name="movie_item_img_max_size">300dp</dimen>
     <dimen name="text_size_medium">16sp</dimen>
     <dimen name="divider">1dp</dimen>
+    <dimen name="bookmark_movie_dimen">120dp</dimen>
 </resources>

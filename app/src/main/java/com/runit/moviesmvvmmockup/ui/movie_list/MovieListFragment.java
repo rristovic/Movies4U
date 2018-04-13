@@ -48,27 +48,28 @@ public class MovieListFragment extends Fragment {
         // Setup list
         mAdapter = new MovieListAdapter(binding.rvMovies, new GridLayoutManager(getActivity(), 2), (parent, view, position, id) -> {
             MovieModel movieModel = mAdapter.getItem(position);
-            MovieDetailsActivity.startActivity(getActivity(), movieModel.getId(), movieModel.getTitle(), movieModel.getThumbnailUrl());
+            MovieDetailsActivity.startActivity(getActivity(), movieModel.getId(), movieModel.getTitle());
         });
         mAdapter.setOnLoadMoreListener(mViewModel::getNextPage);
         binding.rvMovies.setAdapter(mAdapter);
         mViewModel.getMoviesForCategory((MovieListCategory) getArguments().getSerializable(ARG_FRAG_CATEGORY))
                 .observe(this, movieResults -> {
-                    if (movieResults.isSuccess()) {
-                        if (movieResults.get().size() == 0) {
-                            // If loading zero items, it means no more items to load
-                            mAdapter.onLoadMoreComplete();
-                        }
-                        if (mAdapter.getItemCount() > 0) {
-                            // get only last page data
-                            mAdapter.addData(movieResults.get().subList(movieResults.get().size() - mViewModel.getLastPageItemCount(), movieResults.get().size()));
+                    if (movieResults != null)
+                        if (movieResults.isSuccess()) {
+                            if (movieResults.get().size() == 0) {
+                                // If loading zero items, it means no more items to load
+                                mAdapter.onLoadMoreComplete();
+                            }
+                            if (mAdapter.getItemCount() > 0) {
+                                // get only last page data
+                                mAdapter.addData(movieResults.get().subList(movieResults.get().size() - mViewModel.getLastPageItemCount(), movieResults.get().size()));
+                            } else {
+                                // initial load
+                                mAdapter.addData(movieResults.get());
+                            }
                         } else {
-                            // initial load
-                            mAdapter.addData(movieResults.get());
+                            UIUtil.showShortToast(getActivity(), movieResults.error().getMessage());
                         }
-                    } else {
-                        UIUtil.showShortToast(getActivity(), movieResults.error().getMessage());
-                    }
                 });
 
         return binding.getRoot();

@@ -34,7 +34,10 @@
         <activity android:name=".ui.profile.ProfileActivity" />
         <activity
             android:name=".ui.search.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.bookmarks.BookmarksActivity"
+            android:label="@string/title_activity_bookmarks"/>
     </application>
 
 </manifest>

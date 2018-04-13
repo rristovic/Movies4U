@@ -37,19 +37,20 @@ public class SearchActivity extends AppCompatActivity {
         mViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         binding.setSearchVM(mViewModel);
         mViewModel.getSearchResults().observe(this, moviesResult -> {
-            if (moviesResult.isSuccess()) {
-                if (moviesResult.get().size() == 0)
+            if (moviesResult != null)
+                if (moviesResult.isSuccess()) {
+                    if (moviesResult.get().size() == 0)
+                        mAdapter.onLoadMoreComplete();
+                    mAdapter.addData(moviesResult.get());
+                } else {
+                    UIUtil.showShortToast(SearchActivity.this, moviesResult.error().getMessage());
                     mAdapter.onLoadMoreComplete();
-                mAdapter.addData(moviesResult.get());
-            } else {
-                UIUtil.showShortToast(SearchActivity.this, moviesResult.error().getMessage());
-                mAdapter.onLoadMoreComplete();
-            }
+                }
         });
         // init recycleView & adapter
         mAdapter = new MovieListAdapter(binding.rvMovies, new LinearLayoutManager(this), (parent, view, position, id) -> {
             MovieModel movieModel = mAdapter.getItem(position);
-            MovieDetailsActivity.startActivity(SearchActivity.this, movieModel.getId(), movieModel.getTitle(), movieModel.getThumbnailUrl());
+            MovieDetailsActivity.startActivity(SearchActivity.this, movieModel.getId(), movieModel.getTitle());
         });
         binding.rvMovies.setAdapter(mAdapter);
         // init search

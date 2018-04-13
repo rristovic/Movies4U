@@ -1,6 +1,8 @@
 package com.runit.moviesmvvmmockup.data.model;
 
 
+import android.support.annotation.Nullable;
+
 import com.runit.moviesmvvmmockup.data.exception.ErrorBundle;
 import com.runit.moviesmvvmmockup.utils.exception.ErrorMessage;
 
@@ -46,11 +48,11 @@ public class Result<T> {
     }
 
     /**
-     * Gets an error object contained in this wrapper.
+     * Gets an error object contained in this wrapper. Returns null if {@link #isSuccess()} returns true.
      *
      * @return {@link ErrorBundle} object with error message.
      */
-    public ErrorBundle error() {
+    public @Nullable ErrorBundle error() {
         return error;
     }
 

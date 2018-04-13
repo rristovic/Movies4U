@@ -13,7 +13,6 @@ import com.runit.moviesmvvmmockup.data.local.UserCredentials;
 import com.runit.moviesmvvmmockup.data.local.dao.MovieDao;
 import com.runit.moviesmvvmmockup.data.local.db.DBProvider;
 import com.runit.moviesmvvmmockup.data.local.db.MovieDatabase;
-import com.runit.moviesmvvmmockup.data.model.MovieAccountState;
 import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
 import com.runit.moviesmvvmmockup.data.model.MovieModel;
 import com.runit.moviesmvvmmockup.data.model.Result;
@@ -104,9 +103,9 @@ public class MoviesTMDBRepository implements MoviesRepository {
         MovieDao movieDao = mDatabase.movieDao();
         UserCredentials credentials = UserCredentials.getInstance(mContext);
         if (credentials.getUserAccount() != null) {
-            JobExecutor.execute( () -> {
+            JobExecutor.execute(() -> {
                 MovieDao dao = mDatabase.movieDao();
-                if(dao.isMovieBookmarkedAsync(movie.getId(), credentials.getUserAccount().getId()) != null){
+                if (dao.isMovieBookmarkedAsync(movie.getId(), credentials.getUserAccount().getId()) != null) {
                     this.removeFromBookmark(movie);
                 } else {
                     movieDao.insert(movie, credentials.getUserAccount().getId());
@@ -130,23 +129,55 @@ public class MoviesTMDBRepository implements MoviesRepository {
 
     @Override
     public LiveData<Result<MovieModel>> getMovie(long movieId) {
-        final MutableLiveData<Result<MovieModel>> movie = new MutableLiveData<>();
+        final MediatorLiveData<Result<MovieModel>> result = new MediatorLiveData<>();
+        LiveData<MovieModel> dbSource = mDatabase.movieDao().getMovie(movieId);
+        result.addSource(dbSource, movieModel -> {
+            if (movieModel != null) {
+                result.setValue(new Result<>(movieModel));
+            }
+        });
+        MutableLiveData<Result<MovieModel>> networkSource = new MutableLiveData<>();
+        result.addSource(networkSource, movieModel -> {
+            result.removeSource(networkSource);
+            if (movieModel != null) {
+                if (movieModel.isSuccess()) {
+                    // Always replace new data if success
+                    result.setValue(new Result<>(movieModel.get()));
+                } else {
+                    // If failed to load, raplce new data only if db source hasn't loaded up anything
+                    if (result.getValue() == null) {
+                        result.setValue(movieModel);
+                    }
+                }
+            }
+        });
+        fetchMovie(movieId, networkSource);
+
+        return result;
+    }
+
+    /**
+     * Helper method for downloading movie details from network APi.
+     *
+     * @param movieId id of requested movie.
+     * @param result  {@link MutableLiveData} object to set results into.
+     */
+    private void fetchMovie(long movieId, MutableLiveData<Result<MovieModel>> result) {
         RetrofitClient.getClient().getMovieDetails(movieId).enqueue(new Callback<MovieModel>() {
             @Override
             public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    movie.setValue(new Result<>(response.body()));
+                    result.setValue(new Result<>(response.body()));
                 } else {
-                    movie.setValue(new Result<>(ErrorBundle.defaultServerError()));
+                    result.setValue(new Result<>(ErrorBundle.defaultServerError()));
                 }
             }
 
             @Override
             public void onFailure(Call<MovieModel> call, Throwable t) {
-                movie.setValue(new Result<>(ErrorBundle.defaultConnectionError()));
+                result.setValue(new Result<>(ErrorBundle.defaultConnectionError()));
             }
         });
-        return movie;
     }
 
 

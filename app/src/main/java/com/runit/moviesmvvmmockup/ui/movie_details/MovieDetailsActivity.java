@@ -19,9 +19,9 @@ import com.squareup.picasso.Picasso;
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String KEY_ID = "movie_id";
     private static final String KEY_NAME = "movie_name";
-    private static final String KEY_THUMBNAIL = "movie_thumbnail_url";
     private MovieDetailsViewModel mViewModel;
     private MenuItem mBookmarkMenuItem;
+    private Picasso picasso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,21 +30,23 @@ public class MovieDetailsActivity extends AppCompatActivity {
         // setup toolbar
         super.setSupportActionBar(binding.toolbar);
         super.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        super.getSupportActionBar().setTitle(null);
         // setup view model
         mViewModel = ViewModelProviders.of(this).get(MovieDetailsViewModel.class);
         binding.setMovieDetailsViewModel(mViewModel);
         mViewModel.getMovie(getIntent().getLongExtra(KEY_ID, -1))
                 .observe(this, movieModel -> {
-                    if (movieModel.isSuccess()) {
-                        binding.setMovie(movieModel.get());
-                    } else {
-                        UIUtil.showToast(MovieDetailsActivity.this, movieModel.error().getMessage());
-                    }
+                    if (movieModel != null)
+                        if (movieModel.isSuccess()) {
+                            binding.setMovie(movieModel.get());
+                            picasso.load(movieModel.get().getThumbnailUrl()).into(binding.ivMovieThumbnail);
+                        } else {
+                            UIUtil.showToast(MovieDetailsActivity.this, movieModel.error().getMessage());
+                        }
                 });
         mViewModel.onToastMessage().observe(this, msg -> UIUtil.showShortToast(MovieDetailsActivity.this, msg));
         // init UI data
-        Picasso picasso = new Picasso.Builder(this).build();
-        picasso.load(getIntent().getStringExtra(KEY_THUMBNAIL)).into(binding.ivMovieThumbnail);
+        picasso = new Picasso.Builder(this).build();
         binding.tvMovieTitle.setText(getIntent().getStringExtra(KEY_NAME));
         binding.vgHomepage.setOnClickListener(v -> {
             Intent i = new Intent(Intent.ACTION_VIEW);
@@ -103,11 +105,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
 
-    public static void startActivity(Context context, long movieId, String movieName, String thumbnailUrl) {
+    public static void startActivity(Context context, long movieId, String movieName) {
         Intent i = new Intent(context, MovieDetailsActivity.class);
         i.putExtra(KEY_ID, movieId);
         i.putExtra(KEY_NAME, movieName);
-        i.putExtra(KEY_THUMBNAIL, thumbnailUrl);
         context.startActivity(i);
     }
 }

@@ -33,4 +33,7 @@
     <string name="rate">Rate</string>
     <string name="please_login_msg">Please login in order to continue.</string>
     <string name="login_to_use_feature_msg">In order to use this feature, please login.</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="title_activity_bookmarks">BookmarksActivity</string>
+    <string name="bookmarked_movies_title">Bookmarked movies</string>
 </resources>
