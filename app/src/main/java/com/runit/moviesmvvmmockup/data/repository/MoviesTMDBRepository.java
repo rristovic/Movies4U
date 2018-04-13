@@ -3,8 +3,10 @@ package com.runit.moviesmvvmmockup.data.repository;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.runit.moviesmvvmmockup.data.MoviesRepository;
 import com.runit.moviesmvvmmockup.data.exception.ErrorBundle;
@@ -130,13 +132,7 @@ public class MoviesTMDBRepository implements MoviesRepository {
     @Override
     public LiveData<Result<MovieModel>> getMovie(long movieId) {
         final MediatorLiveData<Result<MovieModel>> result = new MediatorLiveData<>();
-        LiveData<MovieModel> dbSource = mDatabase.movieDao().getMovie(movieId);
-        result.addSource(dbSource, movieModel -> {
-            if (movieModel != null) {
-                result.setValue(new Result<>(movieModel));
-            }
-        });
-        MutableLiveData<Result<MovieModel>> networkSource = new MutableLiveData<>();
+        final MutableLiveData<Result<MovieModel>> networkSource = new MutableLiveData<>();
         result.addSource(networkSource, movieModel -> {
             result.removeSource(networkSource);
             if (movieModel != null) {
@@ -151,7 +147,23 @@ public class MoviesTMDBRepository implements MoviesRepository {
                 }
             }
         });
-        fetchMovie(movieId, networkSource);
+
+        LiveData<MovieModel> dbSource = mDatabase.movieDao().getMovie(movieId);
+        result.addSource(dbSource, new Observer<MovieModel>() {
+            boolean dbSourceInitialLoad = true;
+
+            @Override
+            public void onChanged(@Nullable MovieModel movieModel) {
+                if (movieModel != null) {
+                    result.setValue(new Result<>(movieModel));
+                }
+                if (dbSourceInitialLoad) {
+                    // Only fetch from online after db has finished.
+                    fetchMovie(movieId, networkSource);
+                    dbSourceInitialLoad = false;
+                }
+            }
+        });
 
         return result;
     }
