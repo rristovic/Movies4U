@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <variable
+            name="starRating"
+            type="Float" />
 
         <variable
             name="movie"
@@ -9,9 +13,10 @@
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:paddingBottom="@dimen/margin_standard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:layout_margin="@dimen/margin_small"
         android:background="@color/background_white"
         android:minHeight="@dimen/movie_item_height">
 
@@ -20,17 +25,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:maxHeight="@dimen/movie_item_img_max_size" />
+            android:scaleType="fitStart" />
 
         <TextView
             android:id="@+id/tv_movie_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/iv_movie_thumbnail"
-            android:padding="16dp"
+            android:paddingTop="@dimen/margin_standard"
+            android:paddingRight="@dimen/margin_standard"
+            android:paddingLeft="@dimen/margin_standard"
+            android:paddingBottom="32dp"
             android:text="@{movie.title}"
             android:textColor="@color/text_primary_black"
             android:textSize="@dimen/text_size_medium" />
 
+        <android.support.v7.widget.AppCompatRatingBar
+            android:id="@+id/movie_rating"
+            style="@style/Base.Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/margin_standard"
+            android:layout_marginStart="@dimen/margin_standard"
+            android:rating="@{safeUnbox(starRating)}"
+            tools:rating="4" />
+
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_standard"
+            android:layout_marginStart="@dimen/margin_standard"
+            android:layout_toEndOf="@id/movie_rating"
+            android:layout_toRightOf="@id/movie_rating"
+            android:gravity="center"
+            android:text="@{String.valueOf(safeUnbox(movie.voteAverage))}" />
     </RelativeLayout>
 </layout>

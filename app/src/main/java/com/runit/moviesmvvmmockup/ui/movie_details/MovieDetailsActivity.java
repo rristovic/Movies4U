@@ -22,6 +22,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private MovieDetailsViewModel mViewModel;
     private MenuItem mBookmarkMenuItem;
     private Picasso picasso;
+    private boolean mBookmarkPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 break;
             }
             case R.id.action_bookmark: {
+                this.mBookmarkPressed = true;
                 mViewModel.onBookmarkPressed();
                 break;
             }

@@ -51,6 +51,7 @@ public class MovieListAdapter extends AbsEndlessRecycleViewAdapter<MovieModel, M
 
         void bind(MovieModel movieModel) {
             this.binding.setMovie(movieModel);
+            this.binding.setStarRating((movieModel.getVoteAverage() != null && movieModel.getVoteAverage() != 0) ? movieModel.getVoteAverage() / 2 : 0);
             // Must be run to populate view with data immediately, so RecycleView can measure properly
             this.binding.executePendingBindings();
         }

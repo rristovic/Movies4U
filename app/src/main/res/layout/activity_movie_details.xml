@@ -169,7 +169,7 @@
                             style="@style/Text_Info"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{String.valueOf(movie.runtime)}"
+                            android:text="@{String.valueOf(safeUnbox(movie.runtime))}"
                             tools:text="Lorem Ipsum" />
                     </LinearLayout>
 
@@ -188,7 +188,7 @@
                             style="@style/Text_Info"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{String.valueOf(movie.budget)}"
+                            android:text="@{String.valueOf(safeUnbox(movie.budget))}"
                             tools:text="Lorem Ipsum" />
                     </LinearLayout>
 
@@ -207,7 +207,7 @@
                             style="@style/Text_Info"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{String.valueOf(movie.revenue)}"
+                            android:text="@{String.valueOf(safeUnbox(movie.revenue))}"
                             tools:text="Lorem Ipsum" />
                     </LinearLayout>
 

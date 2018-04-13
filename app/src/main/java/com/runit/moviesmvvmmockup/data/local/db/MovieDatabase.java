@@ -10,7 +10,7 @@ import com.runit.moviesmvvmmockup.data.model.MovieModel;
 
 
 @Database(entities = {MovieModel.class, BookmarkedMovie.class},
-        version = 3)
+        version = 1)
 public abstract class MovieDatabase extends RoomDatabase {
     public abstract MovieDao movieDao();
 }

@@ -32,10 +32,13 @@ public class MovieDetailsViewModel extends AndroidViewModel {
     private MoviesRepository mRepository;
     // Current movie id
     private long mMovieId;
+    // Indicates if bookmark icon has been pressed
+    private boolean mBookmarkPressed;
 
 
     public MovieDetailsViewModel(@NonNull Application application) {
         super(application);
+        mBookmarkPressed = false;
         mToastMessage = new SingleLiveEvent<>();
         mRepository = RepositoryProvider.getMoviesRepository(application);
     }
@@ -87,6 +90,7 @@ public class MovieDetailsViewModel extends AndroidViewModel {
         if (this.mMovie.getValue() != null && this.mMovie.getValue().isSuccess() && UserCredentials.getInstance(getApplication()).isLoggedIn()) {
             // Only bookmark if  data is present and user is logged in
             mRepository.bookmark(this.mMovie.getValue().get());
+            mBookmarkPressed = true;
         } else {
             mToastMessage.setValue(getApplication().getString(R.string.login_to_use_feature_msg));
         }
@@ -102,8 +106,16 @@ public class MovieDetailsViewModel extends AndroidViewModel {
         LiveData<Result<Boolean>> source = mRepository.isMovieBookmarked(mMovieId);
         result.addSource(source, booleanResult -> {
             if (booleanResult != null && booleanResult.isSuccess() && booleanResult.get()) {
+                if (mBookmarkPressed) {
+                    mBookmarkPressed = false;
+                    mToastMessage.setValue(getApplication().getString(R.string.movie_bookmarked));
+                }
                 result.setValue(true);
             } else {
+                if (mBookmarkPressed) {
+                    mBookmarkPressed = false;
+                    mToastMessage.setValue(getApplication().getString(R.string.movie_remove_from_bookmarks));
+                }
                 result.setValue(false);
             }
         });

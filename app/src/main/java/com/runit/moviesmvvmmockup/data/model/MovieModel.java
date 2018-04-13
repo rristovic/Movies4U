@@ -80,12 +80,12 @@ public class MovieModel {
     private Boolean video;
     @SerializedName("vote_average")
     @Expose
-    private Double voteAverage;
+    private Float voteAverage;
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
 
-    public MovieModel(Boolean adult, String backdropPath, Integer budget, String homepage, Long id, String imdbId, String originalLanguage, String originalTitle, String overview, Double popularity, String posterPath, String releaseDate, Long revenue, Integer runtime, String status, String tagline, String title, Boolean video, Double voteAverage, Integer voteCount) {
+    public MovieModel(Boolean adult, String backdropPath, Integer budget, String homepage, Long id, String imdbId, String originalLanguage, String originalTitle, String overview, Double popularity, String posterPath, String releaseDate, Long revenue, Integer runtime, String status, String tagline, String title, Boolean video, Float voteAverage, Integer voteCount) {
         this.adult = adult;
         this.backdropPath = backdropPath;
         this.belongsToCollection = null;
@@ -202,7 +202,7 @@ public class MovieModel {
         return video;
     }
 
-    public Double getVoteAverage() {
+    public Float getVoteAverage() {
         return voteAverage;
     }
 

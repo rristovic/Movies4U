@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private DrawerLayout mDrawerLayout;
     private MainNavigationHelper mNavigationHelper;
-    private SearchView mSvSearch;
     private NavigationView mNavigationDrawer;
 
     @Override
@@ -48,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
-
         mNavigationDrawer = findViewById(R.id.nav_view);
         mNavigationDrawer.setNavigationItemSelectedListener(
                 menuItem -> {
@@ -105,25 +103,6 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-        // Init search
-        mSvSearch = findViewById(R.id.sv_search);
-        mSvSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                SearchActivity.startActivity(MainActivity.this, query);
-                // Clear search view and close
-                mSvSearch.setQuery(null, false);
-                mSvSearch.clearFocus();
-                mSvSearch.setIconified(true);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
     }
 
     @Override
@@ -136,6 +115,24 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        // Init search
+        SearchView svSearch = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        svSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                SearchActivity.startActivity(MainActivity.this, query);
+                // Clear search view and close
+                svSearch.setQuery(null, false);
+                svSearch.clearFocus();
+                menu.findItem(R.id.action_search).collapseActionView();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
 
