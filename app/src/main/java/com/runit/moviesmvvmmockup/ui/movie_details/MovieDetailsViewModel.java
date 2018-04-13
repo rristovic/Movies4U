@@ -57,9 +57,9 @@ public class MovieDetailsViewModel extends AndroidViewModel {
     }
 
     /**
-     * Helper method for downloading movie details.
+     * Helper method for retrieving movie details.
      *
-     * @param id Movie's id which details should be downloaded.
+     * @param id Movie's id which details should be retrieved.
      */
     private void fetchMovie(long id) {
         final LiveData<Result<MovieModel>> source = mRepository.getMovie(id);

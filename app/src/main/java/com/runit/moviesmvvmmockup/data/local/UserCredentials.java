@@ -150,6 +150,9 @@ public class UserCredentials {
     private void clearCredentials() {
         this.mRequestToken = null;
         this.mSessionId = null;
+        this.mAccount = null;
+        this.mRequestToken = null;
+        this.mSessionId = null;
         getPreferences().edit().clear().commit();
     }
 }

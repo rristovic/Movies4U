@@ -85,15 +85,12 @@ public class MovieModel {
     @Expose
     private Integer voteCount;
 
-    public MovieModel() {
-    }
-
-    public MovieModel(Boolean adult, String backdropPath, Object belongsToCollection, Integer budget, List<Genre> genres, String homepage, Long id, String imdbId, String originalLanguage, String originalTitle, String overview, Double popularity, String posterPath, String releaseDate, Long revenue, Integer runtime, String status, String tagline, String title, Boolean video, Double voteAverage, Integer voteCount) {
+    public MovieModel(Boolean adult, String backdropPath, Integer budget, String homepage, Long id, String imdbId, String originalLanguage, String originalTitle, String overview, Double popularity, String posterPath, String releaseDate, Long revenue, Integer runtime, String status, String tagline, String title, Boolean video, Double voteAverage, Integer voteCount) {
         this.adult = adult;
         this.backdropPath = backdropPath;
-        this.belongsToCollection = belongsToCollection;
+        this.belongsToCollection = null;
         this.budget = budget;
-        this.genres = genres;
+        this.genres = null;
         this.homepage = homepage;
         this.id = id;
         this.imdbId = imdbId;
@@ -132,6 +129,11 @@ public class MovieModel {
         return adult;
     }
 
+    /**
+     * Return the movie backdrop img url.
+     *
+     * @return valid url or NULL otherwise.
+     */
     public String getBackdropPath() {
         return TextUtils.isEmpty(backdropPath) ? null : "https://image.tmdb.org/t/p/w500" + backdropPath;
     }
@@ -227,93 +229,5 @@ public class MovieModel {
 
     public Integer getVoteCount() {
         return voteCount;
-    }
-
-    public void setAdult(Boolean adult) {
-        this.adult = adult;
-    }
-
-    public void setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
-    }
-
-    public void setBelongsToCollection(Object belongsToCollection) {
-        this.belongsToCollection = belongsToCollection;
-    }
-
-    public void setBudget(Integer budget) {
-        this.budget = budget;
-    }
-
-    public void setGenres(List<Genre> genres) {
-        this.genres = genres;
-    }
-
-    public void setHomepage(String homepage) {
-        this.homepage = homepage;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setImdbId(String imdbId) {
-        this.imdbId = imdbId;
-    }
-
-    public void setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
-    }
-
-    public void setOriginalTitle(String originalTitle) {
-        this.originalTitle = originalTitle;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public void setPopularity(Double popularity) {
-        this.popularity = popularity;
-    }
-
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public void setRevenue(Long revenue) {
-        this.revenue = revenue;
-    }
-
-    public void setRuntime(Integer runtime) {
-        this.runtime = runtime;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setTagline(String tagline) {
-        this.tagline = tagline;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setVideo(Boolean video) {
-        this.video = video;
-    }
-
-    public void setVoteAverage(Double voteAverage) {
-        this.voteAverage = voteAverage;
-    }
-
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
     }
 }
