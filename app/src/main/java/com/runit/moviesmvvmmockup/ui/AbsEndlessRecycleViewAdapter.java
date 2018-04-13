@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.runit.moviesmvvmmockup.R;
+import com.runit.moviesmvvmmockup.utils.JobExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
             lastVisibleItem = mLinearLayoutManager
                     .findLastVisibleItemPosition();
             if (!loading
-                    && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    && totalItemCount <= (lastVisibleItem + visibleThreshold) && dy > 0) {
                 // End has been reached
                 // Do something
                 loading = true;
@@ -207,9 +208,7 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
      * @param data list of items to add if it's not null.
      */
     public final void addData(List<T> data) {
-        if (this.loading) {
-            removeLoader();
-        }
+        removeLoader();
         if (data != null) {
             this.mData.addAll(data);
             notifyDataSetChanged();
@@ -228,9 +227,20 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
      * Helper method for removing loader spinner.
      */
     private void removeLoader() {
-        loading = false;
-        if (mData.size() > 0)
-            mData.remove(mData.size() - 1);
+        if (this.loading) {
+            loading = false;
+            if (mData.size() > 0) {
+                mData.remove(mData.size() - 1);
+                notifyItemRangeRemoved(mData.size(), 1);
+            }
+        }
+    }
+
+    /**
+     * Method to call when loading more items has failed. This will make scroll listener inactive for 3 seconds.
+     */
+    public final void onLoadMoreFailed() {
+        JobExecutor.executeOnUI(this::removeLoader, 3000);
     }
 
     /**

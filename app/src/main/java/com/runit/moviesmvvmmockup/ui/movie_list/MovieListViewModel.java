@@ -4,7 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.databinding.ObservableBoolean;
 import android.support.annotation.NonNull;
 
@@ -69,14 +68,22 @@ public class MovieListViewModel extends AndroidViewModel {
             if (movies.isSuccess()) {
                 mLastPageItemCount = movies.get().size();
             }
-            if (mMovies.getValue() != null && movies.isSuccess()) {
-                // Append to the current list
-                List<MovieModel> currentData = mMovies.getValue().get();
-                currentData.addAll(movies.get());
-                mMovies.setValue(new Result<>(currentData));
+            if (movies.isSuccess()) {
+                if (mMovies.getValue() != null) {
+                    // Append to the current list
+                    List<MovieModel> currentData = mMovies.getValue().get();
+                    currentData.addAll(movies.get());
+                    mMovies.setValue(new Result<>(currentData));
+                } else {
+                    // Add new list data
+                    mMovies.setValue(movies);
+                }
             } else {
-                // Set new list value or error
+                // Set error
                 mMovies.setValue(movies);
+                if (mCurrentPage > 1) {
+                    mCurrentPage--;
+                }
             }
 
             if (isInitialLoading.get()) {
@@ -90,6 +97,7 @@ public class MovieListViewModel extends AndroidViewModel {
      *
      * @return last page item count.
      */
+
     int getLastPageItemCount() {
         return this.mLastPageItemCount;
     }
