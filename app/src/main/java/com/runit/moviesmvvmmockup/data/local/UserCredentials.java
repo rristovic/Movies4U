@@ -119,16 +119,6 @@ public class UserCredentials {
     }
 
     /**
-     * Deletes current user session token.
-     */
-    @SuppressLint("ApplySharedPref")
-    public void clearCredentials() {
-        this.mRequestToken = null;
-        this.mSessionId = null;
-        getPreferences().edit().clear().commit();
-    }
-
-    /**
      * Retrieves {@link SharedPreferences} preference used for storing user credentials.
      *
      * @return private preference for this application.
@@ -144,5 +134,22 @@ public class UserCredentials {
      */
     public boolean isLoggedIn() {
         return this.getSessionId() != null && this.getUserAccount() != null;
+    }
+
+    /**
+     * Logs out current logged in user, deleting it's credentials and user information.
+     */
+    public void logout() {
+        this.clearCredentials();
+    }
+
+    /**
+     * Helper method for deleting current user credentials and user info.
+     */
+    @SuppressLint("ApplySharedPref")
+    private void clearCredentials() {
+        this.mRequestToken = null;
+        this.mSessionId = null;
+        getPreferences().edit().clear().commit();
     }
 }

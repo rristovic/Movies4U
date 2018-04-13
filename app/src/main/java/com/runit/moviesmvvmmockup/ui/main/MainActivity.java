@@ -1,7 +1,5 @@
 package com.runit.moviesmvvmmockup.ui.main;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -17,14 +15,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.runit.moviesmvvmmockup.R;
+import com.runit.moviesmvvmmockup.data.local.UserCredentials;
 import com.runit.moviesmvvmmockup.data.model.MovieListCategory;
 import com.runit.moviesmvvmmockup.ui.bookmarks.BookmarksActivity;
+import com.runit.moviesmvvmmockup.ui.login.LoginActivity;
 import com.runit.moviesmvvmmockup.ui.movie_list.MovieListFragment;
 import com.runit.moviesmvvmmockup.ui.profile.ProfileActivity;
 import com.runit.moviesmvvmmockup.ui.search.SearchActivity;
+import com.runit.moviesmvvmmockup.utils.UIUtil;
 
 /**
  * Created by Radovan Ristovic on 3/29/2018.
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private MainNavigationHelper mNavigationHelper;
     private SearchView mSvSearch;
+    private NavigationView mNavigationDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(
+        mNavigationDrawer = findViewById(R.id.nav_view);
+        mNavigationDrawer.setNavigationItemSelectedListener(
                 menuItem -> {
                     // close drawer when item is tapped
                     mDrawerLayout.closeDrawers();
@@ -72,9 +73,21 @@ public class MainActivity extends AppCompatActivity {
                         }
                         case R.id.nav_my_profile: {
                             ProfileActivity.startActivity(MainActivity.this);
+                            break;
                         }
                         case R.id.nav_bookmarks: {
                             BookmarksActivity.startActivity(MainActivity.this);
+                            break;
+                        }
+                        case R.id.nav_logout: {
+                            UserCredentials.getInstance(MainActivity.this).logout();
+                            this.changeNavigationAccountSection(false);
+                            UIUtil.showShortToast(MainActivity.this, getString(R.string.logged_out));
+                            break;
+                        }
+                        case R.id.nav_login: {
+                            LoginActivity.startActivity(MainActivity.this);
+                            break;
                         }
                     }
                     return true;
@@ -114,6 +127,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        changeNavigationAccountSection(UserCredentials.getInstance(this).isLoggedIn());
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -137,6 +156,30 @@ public class MainActivity extends AppCompatActivity {
             mDrawerLayout.closeDrawers();
         } else
             super.onBackPressed();
+    }
+
+
+    /**
+     * Changes navigation's account section view. Shows 'Login' if provided parameter is false, shows other available account features if the parameter is true.
+     *
+     * @param isLoggedIn boolean indicating if user is logged in.
+     */
+    private void changeNavigationAccountSection(boolean isLoggedIn) {
+        if (isLoggedIn) {
+            if (mNavigationDrawer != null) {
+                mNavigationDrawer.getMenu().findItem(R.id.nav_logout).setVisible(true);
+                mNavigationDrawer.getMenu().findItem(R.id.nav_my_profile).setVisible(true);
+                mNavigationDrawer.getMenu().findItem(R.id.nav_bookmarks).setVisible(true);
+                mNavigationDrawer.getMenu().findItem(R.id.nav_login).setVisible(false);
+            }
+        } else {
+            if (mNavigationDrawer != null) {
+                mNavigationDrawer.getMenu().findItem(R.id.nav_logout).setVisible(false);
+                mNavigationDrawer.getMenu().findItem(R.id.nav_my_profile).setVisible(false);
+                mNavigationDrawer.getMenu().findItem(R.id.nav_bookmarks).setVisible(false);
+                mNavigationDrawer.getMenu().findItem(R.id.nav_login).setVisible(true);
+            }
+        }
     }
 
     /**

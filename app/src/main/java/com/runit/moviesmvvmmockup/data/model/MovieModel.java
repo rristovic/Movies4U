@@ -133,7 +133,7 @@ public class MovieModel {
     }
 
     public String getBackdropPath() {
-        return backdropPath;
+        return TextUtils.isEmpty(backdropPath) ? null : "https://image.tmdb.org/t/p/w500" + backdropPath;
     }
 
     public Object getBelongsToCollection() {

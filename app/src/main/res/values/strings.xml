@@ -36,4 +36,7 @@
     <string name="bookmarks">Bookmarks</string>
     <string name="title_activity_bookmarks">BookmarksActivity</string>
     <string name="bookmarked_movies_title">Bookmarked movies</string>
+    <string name="logout">Logout</string>
+    <string name="login">Login</string>
+    <string name="logged_out">User logged out.</string>
 </resources>

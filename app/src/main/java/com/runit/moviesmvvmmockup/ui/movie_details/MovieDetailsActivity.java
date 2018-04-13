@@ -39,7 +39,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     if (movieModel != null)
                         if (movieModel.isSuccess()) {
                             binding.setMovie(movieModel.get());
-                            picasso.load(movieModel.get().getThumbnailUrl()).into(binding.ivMovieThumbnail);
+                            picasso.load(movieModel.get().getBackdropPath()).into(binding.ivMovieThumbnail);
                         } else {
                             UIUtil.showToast(MovieDetailsActivity.this, movieModel.error().getMessage());
                         }
@@ -79,23 +79,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 break;
             }
             case R.id.action_bookmark: {
-                // For simplicity, implementing here instead of in ViewModel;
-                if (mViewModel != null && mViewModel.isAccountFeatureAvailable()) {
-                    mViewModel.onBookmarkPressed();
-                } else {
-                    // must login first
-                    UIUtil.showLoginDialog(MovieDetailsActivity.this, getString(R.string.login_to_use_feature_msg));
-                }
+                mViewModel.onBookmarkPressed();
                 break;
             }
             case R.id.action_rate: {
-                // For simplicity, implementing here instead of in ViewModel;
-                if (mViewModel != null && mViewModel.isAccountFeatureAvailable()) {
-
-                } else {
-                    // must login first
-                    UIUtil.showLoginDialog(MovieDetailsActivity.this, getString(R.string.login_to_use_feature_msg));
-                }
                 break;
             }
             default: {

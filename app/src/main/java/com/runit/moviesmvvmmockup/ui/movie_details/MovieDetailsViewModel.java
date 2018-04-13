@@ -4,11 +4,10 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.Observer;
 import android.databinding.ObservableBoolean;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import com.runit.moviesmvvmmockup.R;
 import com.runit.moviesmvvmmockup.data.MoviesRepository;
 import com.runit.moviesmvvmmockup.data.RepositoryProvider;
 import com.runit.moviesmvvmmockup.data.local.UserCredentials;
@@ -82,25 +81,20 @@ public class MovieDetailsViewModel extends AndroidViewModel {
     }
 
     /**
-     * Return boolean indicating if account features are available. Return false if user needs to login first.
-     *
-     * @return true if user can proceed with account features such as rating, bookmarking.
-     */
-    public boolean isAccountFeatureAvailable() {
-        return UserCredentials.getInstance(getApplication()).isLoggedIn();
-    }
-
-    /**
      * Method to call when bookmark icon has been pressed. Bookmarks current movie or removes it from bookmarks.
      */
     public void onBookmarkPressed() {
-        if (this.mMovie.getValue() != null && this.mMovie.getValue().isSuccess())
-            // Only bookmark if data is present
+        if (this.mMovie.getValue() != null && this.mMovie.getValue().isSuccess() && UserCredentials.getInstance(getApplication()).isLoggedIn()) {
+            // Only bookmark if  data is present and user is logged in
             mRepository.bookmark(this.mMovie.getValue().get());
+        } else {
+            mToastMessage.setValue(getApplication().getString(R.string.login_to_use_feature_msg));
+        }
     }
 
     /**
      * Checks if movie has been bookmarked.
+     *
      * @return {@link LiveData} observable emitting true if movie has been bookmarked, false otherwise.
      */
     public LiveData<Boolean> isBookmarked() {
