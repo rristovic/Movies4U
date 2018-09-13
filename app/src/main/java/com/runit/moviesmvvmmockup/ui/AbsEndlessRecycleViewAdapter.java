@@ -57,10 +57,12 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
                     && totalItemCount <= (lastVisibleItem + visibleThreshold) && dy > 0) {
                 // End has been reached
                 // Do something
-                loading = true;
-                mRecycleView.post(() -> {
+                if (onLoadMoreListener != null) {
+                    loading = true;
                     mData.add(null);
                     notifyItemInserted(mData.size() - 1);
+                }
+                mRecycleView.post(() -> {
                     if (onLoadMoreListener != null) {
                         onLoadMoreListener.onLoadMore();
                     }
@@ -80,9 +82,9 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
     protected AbsEndlessRecycleViewAdapter(List<T> data, RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager) {
         mContext = recyclerView.getContext();
         if (data == null) {
-            this.mData = new ArrayList<>();
+            this.mData = new ArrayList<>(0);
         } else {
-            this.mData = new ArrayList<>(data);
+            this.mData = data;
         }
         mRecycleView = recyclerView;
         mRecycleView.setLayoutManager(layoutManager);
