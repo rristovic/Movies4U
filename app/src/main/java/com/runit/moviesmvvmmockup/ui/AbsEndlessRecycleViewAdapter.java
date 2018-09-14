@@ -62,6 +62,7 @@ public abstract class AbsEndlessRecycleViewAdapter<T, VH extends RecyclerView.Vi
                     mData.add(null);
                     notifyItemInserted(mData.size() - 1);
                 }
+                // https://stackoverflow.com/questions/39445330/cannot-call-notifyiteminserted-from-recyclerview-onscrolllistener
                 mRecycleView.post(() -> {
                     if (onLoadMoreListener != null) {
                         onLoadMoreListener.onLoadMore();
